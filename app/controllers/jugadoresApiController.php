@@ -44,10 +44,13 @@ Class jugadoresApiController{
         }    
     }        
     
+    /*--Verifica que los campos ingresados para filtrar u ordenar coincidan con los de la bbdd--*/
     public function verificarAtributos($filtro){
         $atributos = $this->model->obtenerColumnas();
         return (in_array($filtro, array_column($atributos, 'column_name')));
     }
+
+    /*--Verifica que los atributos sean correctos, obtiene la sentencia y la ejecuta en el modelo--*/
     public function obtenerJugadoresOrdenados($criterio){
         if($this->verificarAtributos($criterio)){
             if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden']))
@@ -57,13 +60,18 @@ Class jugadoresApiController{
             return $this->model->obtenerJugadoresOrdenados($sql);;
         }
     }
-    public function obtenerJugador($params){//verificar si esta correctamente seteado el :ID, o sea, sin negativos ni caracteres no numericos
+
+    //verificar si esta correctamente seteado el :ID, o sea, sin negativos ni caracteres no numericos
+    public function obtenerJugador($params){
         $id = $params[':ID'];
-        $jugador = $this->model->obtenerJugador($id);
-        if($jugador) 
-            return $this->view->response($jugador, 200);
-        else
-            return $this->view->response("El jugador con el id ".$id." no existe", 404);
+        if(is_numeric($id) && $id > 0){
+            $jugador = $this->model->obtenerJugador($id);
+            if($jugador) 
+                return $this->view->response($jugador, 200);
+            else
+                return $this->view->response("El jugador con el id ".$id." no existe", 404);
+        }else
+            return $this->view->response("Por favor verifique los datos ingresados", 404);
     }
 
     public function agregarJugador(){
