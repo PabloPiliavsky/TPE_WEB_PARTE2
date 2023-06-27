@@ -82,8 +82,8 @@ Class jugadoresModel{
         return $query->fetchAll();
     }
 
-    function paginar($desde, $filas){
-        $sentencia = $this -> db -> prepare("SELECT * FROM `jugadores` ORDER BY id LIMIT $desde, $filas");//puede parametrizarse el order by y el cantidad de filas por pagina
+    function paginar($sql){
+        $sentencia = $this -> db -> prepare($sql);//puede parametrizarse el order by y el cantidad de filas por pagina
         $sentencia -> execute();
         $jugadoresPaginados = $sentencia -> fetchAll(PDO::FETCH_OBJ);
         return $jugadoresPaginados;

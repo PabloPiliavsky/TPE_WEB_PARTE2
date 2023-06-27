@@ -132,7 +132,8 @@ Class jugadoresApiController{
     public function paginar($pagina,$filas){
         if(!empty($pagina) && !empty($filas)){//corroborar que no sea ni negativo ni un caracter no numerico y que la cantidad de filas sea mayor que 0
             $inicio=$filas*($pagina-1);//el 10 es porque todavia no use un param para poner la cantidad de filas
-            $jugadoresPaginado = $this -> model -> paginar($inicio,$filas);
+            $sql = $this->obtenerSentenciaPaginada($inicio,$filas);//lo llamaria ascendentemente por defecto
+            $jugadoresPaginado = $this -> model -> paginar($sql); 
             return $jugadoresPaginado;  
         }
     }
