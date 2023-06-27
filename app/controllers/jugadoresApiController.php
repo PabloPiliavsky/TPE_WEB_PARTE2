@@ -1,16 +1,16 @@
 <?php
 require_once './app/models/jugadores.model.php';
-//require_once './app/models/paises.model.php';
+require_once './app/models/paises.model.php';
 require_once './app/views/mundial.api.view.php';
 Class jugadoresApiController{
     private $model;
     private $view;
-    //private $modelPaises;
+    private $modelPaises;
     private $data;
 
     public function __construct(){
         $this->model = new jugadoresModel(); 
-        //$this->modelPaises = new paisesModel();
+        $this->modelPaises = new paisesModel();
         $this->view = new mundialApiView(); 
         $this->data = file_get_contents("php://input"); // lee el body del request
     }
@@ -19,7 +19,20 @@ Class jugadoresApiController{
         return json_decode($this->data);
     }
     
-    /*--VERIFICA SI ESTÁ SETEADO EL ORDEN, EL FILTRO, LA PAGINA O NINGUNO--*/
+    /*--Si el :ID cumple con las condiciones busca al jugador con dicho id, para mostrarlo junto al código correspondiente--*/
+    public function obtenerJugador($params){
+        $id = $params[':ID'];
+        if(is_numeric($id) && $id > 0){
+            $jugador = $this->model->obtenerJugador($id);
+            if($jugador) 
+                return $this->view->response($jugador, 200);
+            else
+                return $this->view->response("El jugador con el id ".$id." no existe", 404);
+        }else
+            return $this->view->response("Por favor verifique los datos ingresados", 404);
+    }
+
+    /*--Verifica si está seteado el orden, el filtro, la página o ninguno--*/
     public function obtenerJugadores(){
         if (isset($_REQUEST['criterio']))
             $jugadores = $this->obtenerJugadoresOrdenados($_REQUEST['criterio']); 
@@ -36,9 +49,9 @@ Class jugadoresApiController{
             return $this->view->response("No se encontraron jugadores", 404); 
     }
     
+    /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
     public function obtenerJugadoresFiltrados($filtro){ 
-        $existeElFiltro = $this->verificarAtributos($filtro);//boolean
-        if ($existeElFiltro && isset($_REQUEST['valor'])){
+        if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = $this->obtenerSentenciaFiltro($filtro);
             return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
         }    
@@ -61,19 +74,7 @@ Class jugadoresApiController{
         }
     }
 
-    //verificar si esta correctamente seteado el :ID, o sea, sin negativos ni caracteres no numericos
-    public function obtenerJugador($params){
-        $id = $params[':ID'];
-        if(is_numeric($id) && $id > 0){
-            $jugador = $this->model->obtenerJugador($id);
-            if($jugador) 
-                return $this->view->response($jugador, 200);
-            else
-                return $this->view->response("El jugador con el id ".$id." no existe", 404);
-        }else
-            return $this->view->response("Por favor verifique los datos ingresados", 404);
-    }
-
+    /*--Si los datos ingresados no están vacíos agrega al jugador--*/
     public function agregarJugador(){
         $jugador = $this->verificarDatosJugador();
         $id = $this->model->agregarJugador($jugador); 
@@ -84,34 +85,39 @@ Class jugadoresApiController{
             return $this->view->response("El jugador no se pudo agrear con éxito", 400); 
     }
 
+    /*--Si el id cumple con los requisitos se solicita eliminar el jugador y se retorna la respuesta con el código correspondiente--*/
     public function eliminarJugador($params){
-        if(isset($params[':ID'])){//verificar que pasa si esta seteado y vacio
+        if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $eliminado = $this->model->eliminarJugador($params[':ID']); 
             if($eliminado != 0)
                 return $this->view->response("El jugador se eliminó con éxito", 200);
             else
-                return $this->view->response("El jugador no se pudo eliminar", 400);
+                return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ingresado", 400);
         }
     }
 
+    /*--Verifica que exista el jugador con el id y si es así lo actualiza con los datos previamente comprobados--*/
     public function actualizarjugador($params){
-        if(isset($params[':ID'])){
+        if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $id = $params[':ID'];
-            $jugador_db = $this->model->obtenerJugador($id);
-            if($jugador_db){
+            if($this->model->obtenerJugador($id)){
                 $jugador = $this->verificarDatosJugador();
                 $this->model->actualizarJugador($jugador, $id);  
                 return $this->view->response("El jugador con el id ".$id." se actualizó con éxito", 200);       
-            }        
+            }else   
+                return $this->view->response("No existe ningún jugador con el id ingresado", 404);
         }else    
             return $this->view->response("Por favor ingrese el id del jugador", 404);
     }
     
     private function verificarDatosJugador(){
+        $id_paises = $this->modelPaises->obtenerIdPaises();
         $jugador = $this->obtenerDatos();
-        if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais))
-            return $this->view->response("Por favor complete todos los datos", 400);
-        else
+        if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
+            empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
+            if(in_array($jugador->id_pais, $id_paises));
+                return $this->view->response("Por favor complete todos los datos", 400);
+        }else
             return $jugador;    
     }
 
