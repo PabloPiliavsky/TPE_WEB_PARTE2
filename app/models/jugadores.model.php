@@ -20,7 +20,7 @@ Class jugadoresModel{
                                       as pais 
                                       FROM jugadores JOIN paises 
                                       ON jugadores.id_pais = paises.id 
-                                      WHERE (id) = :id');
+                                      WHERE jugadores.id = :id');
         $query->execute([':id'=>$id]);
         return $query->fetch(PDO::FETCH_OBJ);
     }
