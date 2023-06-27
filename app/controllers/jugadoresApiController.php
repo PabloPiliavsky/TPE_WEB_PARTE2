@@ -19,8 +19,8 @@ Class jugadoresApiController{
         return json_decode($this->data);
     }
     
+    /*--VERIFICA SI ESTÁ SETEADO EL ORDEN, EL FILTRO, LA PAGINA O NINGUNO--*/
     public function obtenerJugadores(){
-        /*--VERIFICA SI ESTÁ SETEADO EL ORDEN, EL FILTRO,   LA PAGINA O NINGUNO--*/
         if (isset($_REQUEST['criterio']))
             $jugadores = $this->obtenerJugadoresOrdenados($_REQUEST['criterio']); 
         else if (isset($_REQUEST['filtrar']))
@@ -46,22 +46,15 @@ Class jugadoresApiController{
     
     public function verificarAtributos($filtro){
         $atributos = $this->model->obtenerColumnas();
-        if (in_array($filtro, array_column($atributos, 'column_name')))
-            return true;
-        else
-            return false;
+        return (in_array($filtro, array_column($atributos, 'column_name')));
     }
     public function obtenerJugadoresOrdenados($criterio){
-        $existeElAtributo = $this->verificarAtributos($criterio);
-        if($existeElAtributo){
-            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden'])){
+        if($this->verificarAtributos($criterio)){
+            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden']))
                 $sql = $this->obtenerSentenciaOrden($criterio, $_REQUEST['orden']);
-                $jugadores = $this->model->obtenerJugadoresOrdenados($sql);
-            }else{
-                $sql = $this->obtenerSentenciaOrden($criterio);//lo llamaria ascendentemente por defecto
-                $jugadores = $this->model->obtenerJugadoresOrdenados($sql);  
-            }
-            return $jugadores;
+            else
+                $sql = $this->obtenerSentenciaOrden($criterio); //lo llamaria ascendentemente por defecto   
+            return $this->model->obtenerJugadoresOrdenados($sql);;
         }
     }
     public function obtenerJugador($params){//verificar si esta correctamente seteado el :ID, o sea, sin negativos ni caracteres no numericos
