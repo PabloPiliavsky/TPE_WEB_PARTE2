@@ -4,7 +4,7 @@ Class jugadoresModel{
     private $db;
 
     public function __construct(){
-        $this->db = new PDO('mysql:host=localhost;dbname=db_mundial;charset=utf8', 'root', '');
+        $this->db = new PDO('mysql:host=localhost:4306;dbname=db_mundial;charset=utf8', 'root', '');
     }
     public function obtenerJugadores(){
         $query = $this->db->prepare ("SELECT jugadores.*, paises.nombre 
@@ -80,6 +80,13 @@ Class jugadoresModel{
                                      WHERE table_name = :table_name');
         $query->execute([':table_name' => 'jugadores']);
         return $query->fetchAll();
+    }
+
+    function paginar($desde, $filas){
+        $sentencia = $this -> db -> prepare("SELECT * FROM `jugadores` ORDER BY id LIMIT $desde, $filas");//puede parametrizarse el order by y el cantidad de filas por pagina
+        $sentencia -> execute();
+        $jugadoresPaginados = $sentencia -> fetchAll(PDO::FETCH_OBJ);
+        return $jugadoresPaginados;
     }
 
     

@@ -121,4 +121,14 @@ Class jugadoresApiController{
         $query = "SELECT * FROM jugadores WHERE $filtro LIKE :valor";
         return $query;
     }
+
+    function paginar(){
+        if(isset($_GET['pagina']) && isset($_GET['filas'])){//corroborar que no sea ni negativo ni un caracter no numerico y que la cantidad de filas sea mayor que 0
+            $pagina=0;
+            $pagina = $pagina + $_GET['filas']*($_GET['pagina']-1);//el 10 es porque todavia no use un param para poner la cantidad de filas
+            $jugadoresPaginado = $this -> model -> paginar($pagina,$_GET['filas']);
+            $this -> view -> response($jugadoresPaginado,200);  
+        }
+
+    }
 }
