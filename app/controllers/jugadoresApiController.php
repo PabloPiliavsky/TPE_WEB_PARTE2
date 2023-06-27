@@ -65,7 +65,7 @@ Class jugadoresApiController{
         }
     }
     public function obtenerJugador($params){//verificar si esta correctamente seteado el :ID, o sea, sin negativos ni caracteres no numericos
-        $id= $params[':ID'];
+        $id = $params[':ID'];
         $jugador = $this->model->obtenerJugador($id);
         if($jugador) 
             return $this->view->response($jugador, 200);
