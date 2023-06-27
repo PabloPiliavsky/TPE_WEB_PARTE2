@@ -10,7 +10,7 @@ Class jugadoresModel{
         $query = $this->db->prepare ("SELECT jugadores.*, paises.nombre 
                                       as pais 
                                       FROM jugadores JOIN paises 
-                                      ON jugadores.id_pais = paises.id");
+                                      ON jugadores.id_pais = paises.id");//podriamos poner los nombres de las columnas para no mostrar el id pais
         $query->execute();
         return $query->fetchAll(PDO::FETCH_OBJ); 
     }
