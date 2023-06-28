@@ -6,17 +6,18 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         GET jugadores
 
 
-1.1- Si desea filtrarlos puede agregar los query params:
+1.1- Si desea filtrarlos puede agregar los query params "filtrar" que debe indicar el atributo/columna de la tabla y "valor" que debe indicar el valor de la columna por el que se quiere filtrar. La url debe tener la sigiente forma:
 
-        GET jugadores?filtrar=filtar&valor=valor
+        GET jugadores?filtrar=filtrar&valor=valor
 
         los parámetros correctos para "filtrar" pueden ser:
             -id
             -nombre
             -apellido
+            _descripcion(aunque no le encuentro uso a este)
             -posicion
             -id_pais
-        El "valor" puede variar según lo que desee filtrar.
+        El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
 
 
 1.2- Si desea ordenarlos puede agregar los query params:
@@ -33,8 +34,9 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
             -foto
             -id_pais
         El parámetro orden puede tomar los valores ASC/DESC
+            -ASC los ordenará ascendentemente (por defecto)
             -DESC los listará en orden descendente
-            -ASC los ordenará ascendentemente
+
         En la segunda opción donde no se ingresa el parámetro orden, por defecto se mostrarán 
         de manera ascendente. 
 
@@ -51,7 +53,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
 
         GET jugadores/:ID
 
-        El valor de :ID debe ser un entero > 0. Tampoco se aceptarán letras, ni caractéres especiales.
+        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
 
 
 3- Para actualizar/editar un jugador el verbo, el recurso y el parámetro del recurso deben ser:
