@@ -19,6 +19,9 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
             -id_pais
         El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
 
+        Por ejemplo:
+        GET jugadores?filtrar=posicion&valor=defensor => devuelve todos los jugadores que se desempeñan como defensores.
+        GET jugadores?filtrar=id_pais&valor=2 => devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este caso, Francia
 
 1.2- Si desea ordenarlos debe agregar los query params "criterio", que toma el atributo/columna de la tabla, y "orden" que toma valores para ordenarlo ascendentemente o descendentemente:
 
@@ -39,6 +42,11 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
 
         En la segunda opción donde no se ingresa el parámetro orden, por defecto se mostrarán 
         de manera ascendente. 
+        
+        Por ejemplo:
+
+            GET jugadores?criterio=nombre&orden=asc => devuelve la lista de jugadores por orden alfabetico ascendente de sus nombres.
+            GET jugadores?criterio=id_pais&orden=descendente => devuelve la lista de jugadores ordenados por id_pais de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
 
 
 1.3- Si desea paginar la lista de jugadores debe agregar los query params "pagina", que indicará el numero de pagina que quiere mostrar, y "filas" que indicará la cantidad de filas por pagina:
@@ -46,7 +54,15 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         GET jugadores?pagina=pagina&filas=filas
 
         Los valores de "página" y "filas" deben ser enteros > 0, por lo cuál tampoco pueden ser strings ni caractéres especiales.
-        En caso de que la cantidad de filas o páginas queden "fuera de rango" se mostrará el mensaje "No se encontraron jugadores".
+        En caso de que la cantidad de filas o páginas queden "fuera de rango" se mostrará el mensaje "No se encontraron jugadores" ya que devolveria un JSON vacio.
+
+        Por ejemplo:
+
+            GET jugadores?pagina=2&filas=5 => Divide la lista en grupos (paginas) de a 5 y muestra el segundo de ellos.
+
+            GET jugadores?pagina=5&filas=10 => Divide la lista en grupos (paginas) de a 10 y muestra el quinto de ellos.
+
+
 
 
 2- Para obtener los datos de un jugador el verbo, el recurso y el parámetro del recurso deben ser:
@@ -71,6 +87,15 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
                 "foto": "url de la imágen del jugador",
                 "id_pais": "el id que referencia al pais al que perteneces"
             }
+        por ejemplo:
+            {
+                "nombre": "Lionel Andres",
+                "apellido": "Messi Cuccittini",
+                "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
+                "posicion": "Delantero",
+                "foto": ""https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD"",
+                "id_pais": "1"
+            }
 
         Los valores ingresados en posición pueden variar unicamente entre:
             -Arquero
@@ -94,6 +119,16 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
                 "foto": "url de la imágen del jugador",
                 "id_pais": "el id que referencia al pais al que perteneces"
             }
+
+        Por ejemplo:
+        {
+            "nombre": "Lionel Andres",
+            "apellido": "Messi Cuccittini",
+            "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
+            "posicion": "Delantero",
+            "foto": ""https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD"",
+            "id_pais": "1"
+        }
 
         Los valores ingresados en posición pueden variar unicamente entre:
             -Arquero
