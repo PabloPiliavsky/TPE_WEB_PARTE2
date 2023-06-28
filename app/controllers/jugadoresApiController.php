@@ -48,29 +48,36 @@ Class jugadoresApiController{
         else
             return $this->view->response("No se encontraron jugadores", 404); 
     }
-    
-    /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
-    public function obtenerJugadoresFiltrados($filtro){ 
-        if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
-            $sql = $this->obtenerSentenciaFiltro($filtro);
-            return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
-        }    
-    }        
-    
-    /*--Verifica que los campos ingresados para filtrar u ordenar coincidan con los de la bbdd--*/
-    public function verificarAtributos($filtro){
-        $atributos = $this->model->obtenerColumnas();
-        return (in_array($filtro, array_column($atributos, 'column_name')));
-    }
 
     /*--Verifica que los atributos sean correctos, obtiene la sentencia y la ejecuta en el modelo--*/
     public function obtenerJugadoresOrdenados($criterio){
         if($this->verificarAtributos($criterio)){
-            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden']))
-                $sql = $this->obtenerSentenciaOrden($criterio, $_REQUEST['orden']);
-            else
-                $sql = $this->obtenerSentenciaOrden($criterio); //lo llamaria ascendentemente por defecto   
-            return $this->model->obtenerJugadoresOrdenados($sql);;
+            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden'])){
+                $orden = $_REQUEST['orden'];
+                $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
+            }else
+                $sql = "SELECT * FROM jugadores ORDER BY $criterio"; //lo llamaria ascendentemente por defecto   
+            return $this->model->obtenerJugadoresOrdenados($sql);
+        }
+    }
+
+    /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
+    public function obtenerJugadoresFiltrados($filtro){ 
+        if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
+            $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
+            return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
+        }    
+    }      
+    
+    /*--Verifica que los datos sean correctos para poder paginar adecuadamente--*/
+    public function paginar($pagina,$filas){ 
+        if(!empty($pagina) && !empty($filas) && $pagina>0 && $filas>0 && is_numeric($pagina) && is_numeric($filas)){
+            $cantidad = $this->model->obtenerTotalDeRegistros();
+            if($pagina <= $cantidad/$filas){
+                $inicio=$filas*($pagina-1);
+                $sql = "SELECT * FROM jugadores LIMIT $inicio, $filas";
+                return $this -> model -> paginar($sql); 
+            }
         }
     }
 
@@ -88,11 +95,12 @@ Class jugadoresApiController{
     /*--Si el id cumple con los requisitos se solicita eliminar el jugador y se retorna la respuesta con el código correspondiente--*/
     public function eliminarJugador($params){
         if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
-            $eliminado = $this->model->eliminarJugador($params[':ID']); 
-            if($eliminado != 0)
-                return $this->view->response("El jugador se eliminó con éxito", 200);
-            else
-                return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ingresado", 400);
+            $id = $params[':ID'];
+            if($this->model->obtenerJugador($id)){
+                $this->model->eliminarJugador($id); 
+                return $this->view->response("El jugador con el id ".$id." se eliminó con éxito", 200);
+            }else
+                return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ".$id, 400);
         }
     }
 
@@ -105,43 +113,30 @@ Class jugadoresApiController{
                 $this->model->actualizarJugador($jugador, $id);  
                 return $this->view->response("El jugador con el id ".$id." se actualizó con éxito", 200);       
             }else   
-                return $this->view->response("No existe ningún jugador con el id ingresado", 404);
+                return $this->view->response("No existe ningún jugador con el id ingresado", 400);
         }else    
-            return $this->view->response("Por favor ingrese el id del jugador", 404);
+            return $this->view->response("Por favor verifique que el id se ingresó correctamente", 400);
     }
     
+    /*--Verifica que los datos ingresados en el body de la request sean no esten vacíos y sean correctos*/
     private function verificarDatosJugador(){
         $id_paises = $this->modelPaises->obtenerIdPaises();
         $jugador = $this->obtenerDatos();
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
-            if(in_array($jugador->id_pais, $id_paises));
                 return $this->view->response("Por favor complete todos los datos", 400);
-        }else
-            return $jugador;    
+        }else{
+            if(in_array($jugador->id_pais, array_column($id_paises, 'id')))
+                return $jugador; 
+            else 
+                return $this->view->response("El id del pais no es correcto", 400);
+        }  
     }
 
-    public function obtenerSentenciaOrden($criterio, $orden = null){
-        $sentencia = "SELECT * FROM jugadores ORDER BY $criterio $orden";  
-        return $sentencia;
+    /*--Verifica que los campos ingresados para filtrar u ordenar coincidan con los de la bbdd--*/
+    public function verificarAtributos($filtro){
+        $atributos = $this->model->obtenerColumnas();
+        return (in_array($filtro, array_column($atributos, 'column_name')));
     }
-
-    public function obtenerSentenciaFiltro($filtro){
-        $sentencia = "SELECT * FROM jugadores WHERE $filtro LIKE :valor";
-        return $sentencia;
-    }
-
-    public function obtenerSentenciaPaginada($inicio,$filas){
-        $sentencia = "SELECT * FROM `jugadores` ORDER BY id LIMIT $inicio, $filas";
-        return $sentencia;
-    }
-
-    public function paginar($pagina,$filas){//comprobar que el numero de paginas sea igual o menor a la cantidad total de jugadores dividido la cantidad de filas
-        if(!empty($pagina) && !empty($filas)){//corroborar que no sea ni negativo, ni menor a 0 ni un caracter no numerico y que la cantidad de filas sea mayor que 0
-            $inicio=$filas*($pagina-1);//el 10 es porque todavia no use un param para poner la cantidad de filas
-            $sql = $this->obtenerSentenciaPaginada($inicio,$filas);//lo llamaria ascendentemente por defecto
-            $jugadoresPaginado = $this -> model -> paginar($sql); 
-            return $jugadoresPaginado;  
-        }
-    }
+    
 }

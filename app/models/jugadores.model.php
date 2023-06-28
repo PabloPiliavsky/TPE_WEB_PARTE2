@@ -7,29 +7,39 @@ Class jugadoresModel{
         $this->db = new PDO('mysql:host=localhost;dbname=db_mundial;charset=utf8', 'root', '');
     }
     public function obtenerJugadores(){
-        $query = $this->db->prepare ("SELECT jugadores.*, paises.nombre 
-                                      as pais 
-                                      FROM jugadores JOIN paises 
-                                      ON jugadores.id_pais = paises.id");//podriamos poner los nombres de las columnas para no mostrar el id pais
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_OBJ); 
+        $sentencia = $this->db->prepare ('SELECT jugadores.*, paises.nombre as pais FROM jugadores 
+                                      JOIN paises ON jugadores.id_pais = paises.id');
+        $sentencia->execute();
+        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
     }
     
     public function obtenerJugador($id){
-        $query = $this->db->prepare('SELECT jugadores.*, paises.nombre 
-                                      as pais 
-                                      FROM jugadores JOIN paises 
-                                      ON jugadores.id_pais = paises.id 
-                                      WHERE jugadores.id = :id');
-        $query->execute([':id'=>$id]);
-        return $query->fetch(PDO::FETCH_OBJ);
+        $sentencia = $this->db->prepare('SELECT jugadores.*, paises.nombre as pais FROM jugadores JOIN paises 
+                                      ON jugadores.id_pais = paises.id WHERE jugadores.id = :id');
+        $sentencia->execute([':id'=>$id]);
+        return $sentencia->fetch(PDO::FETCH_OBJ);
+    }
+    public function obtenerJugadoresFiltrados($sql, $valor){
+        $sentencia = $this->db->prepare($sql);
+        $sentencia->execute([':valor' => $valor]);
+        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
+    }
+
+    public function obtenerJugadoresOrdenados($sql){
+        $sentencia = $this->db->prepare($sql);
+        $sentencia->execute();
+        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
+    }
+    function paginar($sql){
+        $sentencia = $this->db->prepare($sql);
+        $sentencia->execute();
+        return $sentencia->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function agregarJugador($jugador){
-        $query = $this->db->prepare('INSERT INTO jugadores 
-                                            (nombre, apellido, descripcion, posicion, foto, id_pais) 
+        $sentencia = $this->db->prepare('INSERT INTO jugadores (nombre, apellido, descripcion, posicion, foto, id_pais) 
                                      VALUES (:nombre, :apellido, :descripcion, :posicion, :foto, :id_pais)');
-        $query->execute([':nombre' => $jugador->nombre, 
+        $sentencia->execute([':nombre' => $jugador->nombre, 
                          ':apellido' => $jugador->apellido,
                          ':descripcion' => $jugador->descripcion, 
                          ':posicion' => $jugador->posicion,
@@ -40,54 +50,37 @@ Class jugadoresModel{
     }
 
     public function actualizarjugador($jugador, $id){
-        $query = $this ->db ->prepare ('UPDATE jugadores 
-                                        SET nombre = :nombre,
-                                            apellido = :apellido,
-                                            descripcion = :descripcion,
-                                            posicion = :posicion,
-                                            foto = :foto,
-                                            id_pais = :id_pais
-                                        WHERE id = :id');
-        $query->execute([':nombre' => $jugador->nombre,
-                         ':apellido' => $jugador->apellido,
-                         ':descripcion' => $jugador->descripcion,
-                         ':posicion' => $jugador->posicion,
-                         ':foto' => $jugador->foto,
-                         ':id_pais' =>$jugador->id_pais,
-                         ':id' => $id]);   
+        $sentencia = $this ->db ->prepare ('UPDATE jugadores 
+                                            SET nombre = :nombre,
+                                                apellido = :apellido,
+                                                descripcion = :descripcion,
+                                                posicion = :posicion,
+                                                foto = :foto,
+                                                id_pais = :id_pais
+                                            WHERE id = :id');
+        $sentencia->execute([':nombre' => $jugador->nombre,
+                             ':apellido' => $jugador->apellido,
+                             ':descripcion' => $jugador->descripcion,
+                             ':posicion' => $jugador->posicion,
+                             ':foto' => $jugador->foto,
+                             ':id_pais' =>$jugador->id_pais,
+                             ':id' => $id]);   
     }
 
     public function eliminarJugador($id){
-        $query =  $this ->db ->prepare('DELETE FROM jugadores WHERE (id) = :id');
-        $query->execute([':id' => $id]);
-        return $query->rowCount();
+        $sentencia =  $this ->db ->prepare('DELETE FROM jugadores WHERE (id) = :id');
+        $sentencia->execute([':id' => $id]);
     }
-    public function obtenerJugadoresFiltrados($sql, $valor){
-        $query = $this->db->prepare($sql);
-        $query->execute([':valor' => $valor]);
-        return $query->fetchAll(PDO::FETCH_OBJ); 
-    }
-
-    public function obtenerJugadoresOrdenados($sql){
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_OBJ); 
-    }
-   
-    public function obtenerColumnas(){
-        $query = $this->db->prepare('SELECT column_name 
-                                     FROM information_schema.columns 
-                                     WHERE table_name = :table_name');
-        $query->execute([':table_name' => 'jugadores']);
-        return $query->fetchAll();
-    }
-
-    function paginar($sql){
-        $sentencia = $this -> db -> prepare($sql);//puede parametrizarse el order by y el cantidad de filas por pagina
-        $sentencia -> execute();
-        $jugadoresPaginados = $sentencia -> fetchAll(PDO::FETCH_OBJ);
-        return $jugadoresPaginados;
-    }
-
     
+    public function obtenerColumnas(){
+        $sentencia = $this->db->prepare('SELECT column_name FROM information_schema.columns WHERE table_name = :table_name');
+        $sentencia->execute([':table_name' => 'jugadores']);
+        return $sentencia->fetchAll();
+    }
+
+    public function obtenerTotalDeRegistros(){
+        $sentencia = $this->db->prepare ("SELECT count(*) FROM jugadores");
+        $sentencia->execute();
+        return $sentencia->fetchColumn(); 
+    }
 }
