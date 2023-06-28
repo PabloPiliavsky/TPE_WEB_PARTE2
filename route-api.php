@@ -1,13 +1,11 @@
 <?php 
-
 require_once './libs/Router.php';
 require_once './app/controllers/jugadoresApiController.php';
 
-
-/*--Instancio un nuevo router--*/
+/*--Instancia un nuevo router--*/
 $router = new Router();
 
-/*--Defino la tabla de ruteo--*/
+/*--Define la tabla de ruteo--*/
 $router->addRoute('jugadores', 'GET', 'jugadoresApiController', 'obtenerJugadores');
 $router->addRoute('jugadores/:ID', 'GET', 'jugadoresApiController', 'obtenerJugador');
 $router->addRoute('jugadores', 'POST', 'jugadoresApiController', 'agregarJugador');
