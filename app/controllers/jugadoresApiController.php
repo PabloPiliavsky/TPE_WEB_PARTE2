@@ -68,10 +68,7 @@ Class jugadoresApiController{
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
             return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
-        }    
-        else
-            return $this->view->response("verificar la columna elegida para filtrar o el valor seteado", 404);
-
+        }    //no agregue un mensaje porque se pisa con el de obtener jugadores
     }      
     
     /*--Verifica que los datos sean correctos para poder paginar adecuadamente--*/
@@ -86,8 +83,8 @@ Class jugadoresApiController{
             else
                 return $this->view->response("la pagina pedida con esa cantidad de filas no contiene elementos", 404);
         }
-        else
-            return $this->view->response("Verificar la forma de los parametros utilizados", 404);
+        //else se pisa el mensaje con el de obtener jugadores
+          //  return $this->view->response("Verificar la forma de los parametros utilizados", 404);
     }
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/

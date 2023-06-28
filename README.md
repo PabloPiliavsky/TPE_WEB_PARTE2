@@ -6,7 +6,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         GET jugadores
 
 
-1.1- Si desea filtrarlos puede agregar los query params "filtrar" que debe indicar el atributo/columna de la tabla y "valor" que debe indicar el valor de la columna por el que se quiere filtrar. La url debe tener la sigiente forma:
+1.1- Si desea filtrarlos debe agregar los query params "filtrar" que debe indicar el atributo/columna de la tabla y "valor" que debe indicar el valor de la columna por el que se quiere filtrar. La url debe tener la sigiente forma:
 
         GET jugadores?filtrar=filtrar&valor=valor
 
@@ -20,7 +20,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
 
 
-1.2- Si desea ordenarlos puede agregar los query params:
+1.2- Si desea ordenarlos debe agregar los query params "criterio", que toma el atributo/columna de la tabla, y "orden" que toma valores para ordenarlo ascendentemente o descendentemente:
 
         GET jugadores?criterio=criterio&orden=orden
         GET jugadores?criterio=criterio
@@ -41,7 +41,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         de manera ascendente. 
 
 
-1.3- Si desea paginar la lista de jugadores debe indicar el verbo, el recuerso y los        parámetros get deben ser:
+1.3- Si desea paginar la lista de jugadores debe agregar los query params "pagina", que indicará el numero de pagina que quiere mostrar, y "filas" que indicará la cantidad de filas por pagina:
 
         GET jugadores?pagina=pagina&filas=filas
 
@@ -60,16 +60,16 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
 
         PUT jugadores/:ID
     
-        El valor de :ID debe ser un entero > 0. No se aceptarán letras, ni caractéres especiales.
+        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales..
 
         En el body de la request se deben ingresar los datos con el siguiente formato:
             {
-                "nombre": "nombre",
-                "apellido": "apellido",
+                "nombre": "nombre del jugador",
+                "apellido": "apellido del jugador",
                 "descripcion": "Breve descripción del jugador",
-                "posicion": "posición",
-                "foto": "url de la imágen",
-                "id_pais": 2
+                "posicion": "posición principal en la que participa para la seleccion actualmente",
+                "foto": "url de la imágen del jugador",
+                "id_pais": "el id que referencia al pais al que perteneces"
             }
 
         Los valores ingresados en posición pueden variar unicamente entre:
@@ -78,7 +78,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
             -Delantero
             -Medio Campista
             
-        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales. 
+        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales.Los valores referenciados hasta el momento son [1->Argentina, 2->Francia, 3->Croacia, 4->Marruecos]
 
 
 4- Para agregar un nuevo jugador el verbo y el recurso deben ser: 
@@ -87,12 +87,12 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
 
         En el body de la request se deben ingresar los datos con el siguiente formato:
             {
-                "nombre": "nombre",
-                "apellido": "apellido",
+                "nombre": "nombre del jugador",
+                "apellido": "apellido del jugador",
                 "descripcion": "Breve descripción del jugador",
-                "posicion": "posición",
-                "foto": "url de la imágen",
-                "id_pais": 2
+                "posicion": "posición principal en la que participa para la seleccion actualmente",
+                "foto": "url de la imágen del jugador",
+                "id_pais": "el id que referencia al pais al que perteneces"
             }
 
         Los valores ingresados en posición pueden variar unicamente entre:
@@ -101,12 +101,12 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
             -Delantero
             -Medio Campista
             
-        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales. 
+        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales.Los valores referenciados hasta el momento son [1->Argentina, 2->Francia, 3->Croacia, 4->Marruecos]
 
 
 5- Para eliminar un jugador el verbo, el recurso y el parámetro del recurso deben ser: 
 
         DELETE jugadores/:ID
 
-        El valor de :ID debe ser un entero > 0. No se aceptarán letras, ni caractéres especiales.
+        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
 
