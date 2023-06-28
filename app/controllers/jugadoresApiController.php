@@ -59,6 +59,8 @@ Class jugadoresApiController{
                 $sql = "SELECT * FROM jugadores ORDER BY $criterio"; //lo llamaria ascendentemente por defecto   
             return $this->model->obtenerJugadoresOrdenados($sql);
         }
+        else
+            return $this->view->response("Verificar la columna/atributo de la tabla elegida como criterio", 404);
     }
 
     /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
@@ -67,6 +69,9 @@ Class jugadoresApiController{
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
             return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
         }    
+        else
+            return $this->view->response("verificar la columna elegida para filtrar o el valor seteado", 404);
+
     }      
     
     /*--Verifica que los datos sean correctos para poder paginar adecuadamente--*/
@@ -78,7 +83,11 @@ Class jugadoresApiController{
                 $sql = "SELECT * FROM jugadores LIMIT $inicio, $filas";
                 return $this -> model -> paginar($sql); 
             }
+            else
+                return $this->view->response("la pagina pedida con esa cantidad de filas no contiene elementos", 404);
         }
+        else
+            return $this->view->response("Verificar la forma de los parametros utilizados", 404);
     }
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/
@@ -102,6 +111,8 @@ Class jugadoresApiController{
             }else
                 return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ".$id, 400);
         }
+        else
+            return $this->view->response("Por favor verifique el id ingresado", 404);
     }
 
     /*--Verifica que exista el jugador con el id y si es así lo actualiza con los datos previamente comprobados--*/
