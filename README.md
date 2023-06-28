@@ -20,8 +20,9 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
 
         Por ejemplo:
-        GET jugadores?filtrar=posicion&valor=defensor => devuelve todos los jugadores que se desempeñan como defensores.
-        GET jugadores?filtrar=id_pais&valor=2 => devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este caso, Francia
+            GET jugadores?filtrar=posicion&valor=defensor => devuelve todos los jugadores que se desempeñan como defensores.
+
+            GET jugadores?filtrar=id_pais&valor=2 => devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este caso, Francia.
 
 1.2- Si desea ordenarlos debe agregar los query params "criterio", que toma el atributo/columna de la tabla, y "orden" que toma valores para ordenarlo ascendentemente o descendentemente:
 
@@ -46,6 +47,7 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         Por ejemplo:
 
             GET jugadores?criterio=nombre&orden=asc => devuelve la lista de jugadores por orden alfabetico ascendente de sus nombres.
+
             GET jugadores?criterio=id_pais&orden=descendente => devuelve la lista de jugadores ordenados por id_pais de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
 
 
@@ -70,6 +72,11 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         GET jugadores/:ID
 
         El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
+
+        Por ejemplo
+            GET jugadores/15 => muestra los datos del jugador con id 15.
+
+            GET jugadores/21 => muestra los datos del jugador con id 21.
 
 
 3- Para actualizar/editar un jugador el verbo, el recurso y el parámetro del recurso deben ser:
@@ -144,4 +151,9 @@ Para obtener los datos las urls deben comenzar de la siguiente manera:
         DELETE jugadores/:ID
 
         El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
+
+        Por ejemplo:
+            DELETE jugadores/3 => elimina de la tabla el jugador con id igual a 3.
+            
+            DELETE jugadores/17 => elimina de la tabla el jugador con id igual a 17.
 
