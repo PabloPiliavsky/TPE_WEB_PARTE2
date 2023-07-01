@@ -1,6 +1,7 @@
 <?php 
 require_once './libs/Router.php';
 require_once './app/controllers/jugadoresApiController.php';
+require_once './app/controllers/usuarioApiController.php';
 
 /*--Instancia un nuevo router--*/
 $router = new Router();
@@ -11,6 +12,7 @@ $router->addRoute('jugadores/:ID', 'GET', 'jugadoresApiController', 'obtenerJuga
 $router->addRoute('jugadores', 'POST', 'jugadoresApiController', 'agregarJugador');
 $router->addRoute('jugadores/:ID', 'DELETE', 'jugadoresApiController', 'eliminarJugador');
 $router->addRoute('jugadores/:ID', 'PUT', 'jugadoresApiController', 'actualizarJugador');
+$router->addRoute('usuario','POST','usuarioApiController','login');
 
 
 /*--Rutea--*/

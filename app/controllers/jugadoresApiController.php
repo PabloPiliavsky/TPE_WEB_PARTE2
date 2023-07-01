@@ -2,6 +2,7 @@
 require_once './app/models/jugadores.model.php';
 require_once './app/models/paises.model.php';
 require_once './app/views/mundial.api.view.php';
+require_once './libs/authHelper.php';
 Class jugadoresApiController{
     private $model;
     private $view;
@@ -89,6 +90,7 @@ Class jugadoresApiController{
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/
     public function agregarJugador(){
+        $this -> comprobarUsuarioValido();
         $jugador = $this->verificarDatosJugador();
         $id = $this->model->agregarJugador($jugador); 
         $jugador = $this->model->obtenerJugador($id);
@@ -100,6 +102,7 @@ Class jugadoresApiController{
 
     /*--Si el id cumple con los requisitos se solicita eliminar el jugador y se retorna la respuesta con el código correspondiente--*/
     public function eliminarJugador($params){
+        $this -> comprobarUsuarioValido();
         if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $id = $params[':ID'];
             if($this->model->obtenerJugador($id)){
@@ -114,6 +117,7 @@ Class jugadoresApiController{
 
     /*--Verifica que exista el jugador con el id y si es así lo actualiza con los datos previamente comprobados--*/
     public function actualizarjugador($params){
+        $this -> comprobarUsuarioValido();
         if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $id = $params[':ID'];
             if($this->model->obtenerJugador($id)){
@@ -145,6 +149,14 @@ Class jugadoresApiController{
     public function verificarAtributos($filtro){
         $atributos = $this->model->obtenerColumnas();
         return (in_array($filtro, array_column($atributos, 'column_name')));
+    }
+
+    public function comprobarUsuarioValido(){
+        $helper = new usuariosHelper();
+        if(!($helper->validarPermisos())){
+            $this -> view -> response("no posee permisos para realizar esta accion",401);
+            die();
+        }
     }
     
 }
