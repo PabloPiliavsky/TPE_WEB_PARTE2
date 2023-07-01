@@ -7,10 +7,10 @@ Class jugadoresModel{
         $this->db = new PDO('mysql:host=localhost:4306;dbname=db_mundial;charset=utf8', 'root', '');
     }
     public function obtenerJugadores(){
-        $sentencia = $this->db->prepare ('SELECT jugadores.*, paises.nombre as pais FROM jugadores 
+        $sentencia = $this->db->prepare('SELECT jugadores.*, paises.nombre as pais FROM jugadores 
                                       JOIN paises ON jugadores.id_pais = paises.id');
         $sentencia->execute();
-        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
+        return $sentencia->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function obtenerJugador($id){
