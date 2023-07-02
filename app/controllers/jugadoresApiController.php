@@ -2,7 +2,7 @@
 require_once './app/models/jugadores.model.php';
 require_once './app/models/paises.model.php';
 require_once './app/views/mundial.api.view.php';
-require_once './libs/authHelper.php';
+require_once './helper/authHelper.php';
 Class jugadoresApiController{
     private $model;
     private $view;
@@ -45,9 +45,7 @@ Class jugadoresApiController{
             $jugadores = $this->model->obtenerJugadores();  
         /*--En cualquiera de los casos muestra la vista adecuada--*/
         if ($jugadores != null)
-            return $this->view->response($jugadores, 200);
-        else
-            return $this->view->response("No se encontraron jugadores", 404); 
+            return $this->view->response($jugadores, 200); 
     }
 
     /*--Verifica que los atributos sean correctos, obtiene la sentencia y la ejecuta en el modelo--*/
@@ -61,15 +59,16 @@ Class jugadoresApiController{
             return $this->model->obtenerJugadoresOrdenados($sql);
         }
         else
-            return $this->view->response("Verificar la columna/atributo de la tabla elegida como criterio", 404);
+            return $this->view->response("Verificar la columna/atributo de la tabla elegida como criterio", 400);
     }
 
     /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
-    public function obtenerJugadoresFiltrados($filtro){ 
+    public function obtenerJugadoresFiltrados($filtro){ //listo
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
             return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
-        }    //no agregue un mensaje porque se pisa con el de obtener jugadores
+        }else
+            return $this->view->response("Verificar el filtro elegido como criterio y el valor ingresado", 400);
     }      
     
     /*--Verifica que los datos sean correctos para poder paginar adecuadamente--*/
@@ -83,9 +82,8 @@ Class jugadoresApiController{
             }
             else
                 return $this->view->response("la pagina pedida con esa cantidad de filas no contiene elementos", 404);
-        }
-        //else se pisa el mensaje con el de obtener jugadores
-          //  return $this->view->response("Verificar la forma de los parametros utilizados", 404);
+        }else 
+            return $this->view->response("Verificar que los parametros utilizados sean correctos. Ver más información en la documentación", 404);
     }
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/
