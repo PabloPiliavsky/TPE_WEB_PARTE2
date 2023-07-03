@@ -4,7 +4,7 @@ require_once './app/models/usuario.model.php';
 
 Class usuariosHelper {
 
-    private $secretKey = 'messias';
+    private $secretKey = 'messias'; // se usa para desencriptar en el comprobar
     private $usuario;
     private $model;
 
@@ -37,14 +37,14 @@ Class usuariosHelper {
             'exp' => time() + 3600, // Fecha de vencimiento del token (1 hora)
             'data' => $usuario->usuario // Datos adicionales del usuario
         ];
-        // Genera el token JWT
-        $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);
+        // Genera el token JWT, que es el tipo de firma del token
+        $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);//valores constantes en un json para el header
         $header = base64_encode($header);
 
         $payload = json_encode($tokenData);
         $payload = base64_encode($payload);
 
-        $signature = hash_hmac('sha256', "$header.$payload", $this->secretKey, true);
+        $signature = hash_hmac('sha256', "$header.$payload", $this->secretKey, true);//hash entre header, payload y el secretkey, todo encripado
         $signature = base64_encode($signature);
 
         $token = "$header.$payload.$signature";
@@ -56,14 +56,13 @@ Class usuariosHelper {
         // Divide el token en sus componentes: encabezado, payload y firma
         [$header, $payload, $signature] = explode('.', $token);
 
-        // Decodifica el encabezado y el payload
-        $headerData = json_decode(base64_decode($header), true);
+        // Decodifica el payload para recibir los datos ingresados al crear el token
         $payloadData = json_decode(base64_decode($payload), true);
 
         // Verifica la firma del token
-        $hash = hash_hmac('sha256', "$header.$payload", $this->secretKey, true);
+        $hash = hash_hmac('sha256', "$header.$payload", $this->secretKey, true);//'sha256' es una constante generada por el JWT
         $signatureData = base64_decode($signature);
-        $isSignatureValid = hash_equals($hash, $signatureData);
+        $isSignatureValid = hash_equals($hash, $signatureData);//compara el hash nuevo con el anterior
 
         if ($isSignatureValid) {
             // Verifica la fecha de vencimiento
