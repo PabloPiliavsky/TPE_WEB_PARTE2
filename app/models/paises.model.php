@@ -4,49 +4,43 @@ Class paisesModel{
     private $db;
 
     public function __construct(){
-        $this->db = new PDO('mysql:host=localhost:4306;dbname=db_mundial;charset=utf8', 'root', '');
+        $this->db = new PDO('mysql:host=localhost;dbname=db_mundial;charset=utf8', 'root', '');
     }
-    public function obtenerIdPaises(){
+    public function obtenerIdPaises(){  
         $query = $this->db->prepare("SELECT id FROM paises");
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC); 
     }
 
-    public function obtenerNombrePaises(){
-        $query = $this->db->prepare("SELECT nombre FROM paises");
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC); 
+    /*--Obtiene todos los paises filtrados por criterio/valor--*/
+    public function obtenerPaisesFiltrados($sql, $valor){ 
+        $sentencia = $this->db->prepare($sql);
+        $sentencia->execute([':valor' => $valor]);
+        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
     }
-
-    public function obtenerClasificacionPaises(){
-        $query = $this->db->prepare("SELECT clasificacion FROM paises");
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC); 
+    /*--Obtiene todos los paises ordenados por criterio (Listado de categorias)--*/
+    public function obtenerPaisesOrdenados($sql){  
+        $sentencia = $this->db->prepare($sql);
+        $sentencia->execute();
+        return $sentencia->fetchAll(PDO::FETCH_OBJ); 
     }
 
     /*--Obtiene todos los paises (Listado de categorias)--*/
     function obtenerPaises(){
-        $sentencia = $this -> db -> prepare("SELECT * FROM paises ORDER BY clasificacion");
-        $sentencia -> execute();
+        $sentencia = $this->db->prepare("SELECT * FROM paises");
+        $sentencia->execute();
         return $sentencia->fetchAll(PDO::FETCH_OBJ);
     }
 
-    /*--Obtiene el pais según el nombre (items por categoria)--*/
-    function obtenerPaisPorNombre($nombre_pais){
-        $sentencia = $this -> db ->prepare("SELECT * FROM paises WHERE (nombre) = :nombre");
-        $sentencia -> execute([":nombre"=>$nombre_pais]);
-        return $sentencia -> fetch(PDO::FETCH_OBJ);
-    }
-
     /*--Obtiene el pais segun id--*/
-    function obtenerPais($id){
+    function obtenerPais($id){  
         $sentencia = $this -> db -> prepare("SELECT * FROM paises WHERE (id) = :id");
         $sentencia -> execute([":id"=>$id]);
         return $sentencia -> fetch(PDO::FETCH_OBJ);
     }
 
     /*--Borra el pais segun id --*/
-    function  eliminarPais($id){
+    function  eliminarPais($id){  
         $sentencia = $this -> db ->prepare("DELETE FROM paises WHERE (id)=:id");
         $sentencia -> execute([":id"=>$id]);
         return $sentencia->rowCount();
@@ -86,5 +80,12 @@ Class paisesModel{
         $sentencia -> execute([":clasificacion" => $clasificacion,
                                 ":nombre" => $nombre]);
         return  $sentencia->fetch(PDO::FETCH_OBJ);
+    }
+
+    /*--Retorna los atributos/columnas de la tabla paises--*/
+    public function obtenerColumnas(){
+        $sentencia = $this->db->prepare('SELECT column_name FROM information_schema.columns WHERE table_name = :table_name');
+        $sentencia->execute([':table_name' => 'paises']);
+        return $sentencia->fetchAll();
     }
 }
