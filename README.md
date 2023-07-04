@@ -150,12 +150,19 @@ Devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este
 > + Cuerpo de la respuesta
 >   - Listará los jugadores en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
 
-### Por el contrario, si los datos son incorrectos o se encuentran vacíos la respuesta será
+### Si los datos son incorrectos o se encuentran vacíos la respuesta será
 
 > + Código de respuesta
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
 >   - "Verificar el filtro elegido como criterio y el valor ingresado."
+
+### Si el criterio es correcto pero el valor no existe la respuesta será
+
+> + Código de respuesta
+>   - 404 (Not found)
+> + Cuerpo de la respuesta
+>   - "No hay ningún paises con ese valor"
 
 ## 1.2 ORDENADO:
 Para ordenar la obtención de todos los jugadores debe agregar los query params **criterio** (que debe indicar el atributo con el cuál desea ordenar) y **orden** (que indicará el valor para ordenarlo ascendentemente o descendentemente):
@@ -497,12 +504,19 @@ Devuelve todos los paises Europeos que hayan clasificado.
 > + Cuerpo de la respuesta
 >   - Listará los paises en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
 
-### Por el contrario, si los datos son incorrectos o se encuentran vacíos la respuesta será
+### Si los datos son incorrectos o se encuentran vacíos la respuesta será
 
 > + Código de respuesta
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
 >   - "Verificar el filtro elegido como criterio y/o el valor ingresado"
+
+### Si el criterio es correcto pero el valor no existe la respuesta será
+
+> + Código de respuesta
+>   - 404 (Not found)
+> + Cuerpo de la respuesta
+>   - "No hay ningún paises con ese valor"
 
 ## 1.2. ORDENADO
 Si desea ordenarlos debe agregar los query params **criterio** (que indica el atributo/columna de la tabla) y **orden** (donde debe indicar los valores para ordenarlo ascendente o descendentemente):
