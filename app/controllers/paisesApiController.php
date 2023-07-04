@@ -17,6 +17,7 @@ Class paisesApiController{
         $this->data = file_get_contents("php://input"); // lee el body del request
     }
 
+    /*--Convierte el body de la request codificado en JSON a una variable de PHP--*/
     private function obtenerDatos() {
         return json_decode($this->data);
     }
@@ -170,10 +171,11 @@ Class paisesApiController{
         return (in_array($filtro, array_column($atributos, 'column_name')));
     }
 
+    /*--Verifica los permisos para las acciones que requieren un TOKEN--*/
     public function comprobarUsuarioValido(){
         $helper = new usuariosHelper();
         if(!($helper->validarPermisos())){
-            $this->view->response("no posee permisos para realizar esta accion",401);
+            $this->view->response("No posee permisos para realizar esta acción", 401);
             die();
         }
     }

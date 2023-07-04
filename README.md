@@ -85,6 +85,13 @@ Es decir, solo debería copiar:
 > + Cuerpo de la respuesta
 >   - "Debe indicar el nombre de usuario y/o password."
 
+### Si los campos de _usuario_ y/o _password_ son incorrectos recibirá la siguiente respuesta:
+
+> + Código de estado HTPP
+>   - 401 (Unauthorized)
+> + Cuerpo de la respuesta
+>   - "No posee permisos para realizar esta acción"
+
 ## 2. AGREGAR EL ENDPOINT DESEADO
 Por ejemplo, para agregar un país, debe ser:
 ```javascript

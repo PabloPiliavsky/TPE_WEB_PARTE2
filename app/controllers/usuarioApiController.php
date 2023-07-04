@@ -9,18 +9,19 @@ class usuarioApiController{
     private $data;
 
     public function __construct(){
-        $this -> data = file_get_contents ("php://input");
+        $this -> data = file_get_contents ("php://input"); // lee el body del request
         $this -> apiView = new mundialApiView();
         $this -> model = new usuariosModel();
     }
 
+    /*--Convierte el body de la request codificado en JSON a una variable de PHP--*/
     private function getData(){
         return json_decode($this->data);
     }
 
+    /*--Verifica que el usuario y contraseña coincidan con el de la BBDD y si es correcto genera el token--*/
     public function login(){
         $datos = $this->getData();
-        //hacer comprobaciones del get data
         $usuario = $datos->usuario;
         $password = $datos->password;
         if (empty($usuario) || empty($password))
@@ -36,9 +37,4 @@ class usuarioApiController{
                 $this->apiView->response("usuario o contraseña incorrecto/s", 400);    
         }    
     }
-
 }
-
-
-
-?>

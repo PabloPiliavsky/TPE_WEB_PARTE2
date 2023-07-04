@@ -1,9 +1,7 @@
 <?php
-
 require_once './app/models/usuario.model.php';
 
 Class usuariosHelper {
-
     private $secretKey = 'messias';
     private $usuario;
     private $model;
@@ -13,8 +11,8 @@ Class usuariosHelper {
         $this -> usuario = null;
     }
 
-    public function validarPermisos()
-    {
+    /*--Valida que el campo Authorization no este vacío (token) y que el token ingresado sea válido--*/
+    public function validarPermisos(){
         $header = apache_request_headers();
         if (!isset($header['Authorization']))
             return null;
@@ -29,7 +27,7 @@ Class usuariosHelper {
         } else
             return null;
     }
-
+    /*-- Genera y retorna un nuevo token--*/
     function obtenerToken($usuario){
         $tokenData =[
             'sub' => $usuario->id, // Identificador del usuario
@@ -50,9 +48,9 @@ Class usuariosHelper {
         $token = "$header.$payload.$signature";
         return ['token' => $token];
     }
-
-    private function comprobarToken($token)
-    {
+    
+    /*--Comprueba que el TOKEN ingresado coincida con el propocionado previamente--*/
+    private function comprobarToken($token){
         // Divide el token en sus componentes: encabezado, payload y firma
         [$header, $payload, $signature] = explode('.', $token);
 
@@ -64,21 +62,15 @@ Class usuariosHelper {
         $signatureData = base64_decode($signature);
         $isSignatureValid = hash_equals($hash, $signatureData);
 
-        if ($isSignatureValid) {
+        if ($isSignatureValid){
             // Verifica la fecha de vencimiento
             $currentTimestamp = time();
             $expirationTimestamp = $payloadData['exp'];
-            if ($currentTimestamp <= $expirationTimestamp) {
-                // El token no ha expirado
+            if ($currentTimestamp <= $expirationTimestamp) // El token no ha expirado 
                 return $payloadData['sub']; // identificador del usuario del payload
-            } else {
-                return null;
-            }
-        } else {
+            else 
+                return null;   
+        }else 
             return null;
-        }
     }
-
-
-
 }
