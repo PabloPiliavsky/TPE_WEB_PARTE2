@@ -53,7 +53,7 @@ Class jugadoresApiController{
         if($this->verificarAtributos($criterio)){
             if(isset($_REQUEST['orden'])) {
                 $orden = $_REQUEST['orden'];
-                if($orden == null || $orden =="asc" || $orden =="ASC" || $orden == "desc" || $orden == "DESC"){
+                if($orden == null || $orden == "asc" || $orden == "ASC" || $orden == "desc" || $orden == "DESC"){
                     $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
                     return $this->model->obtenerJugadoresOrdenados($sql);
                 }else
@@ -65,7 +65,7 @@ Class jugadoresApiController{
             }
         }
         else
-            return $this->view->response("Verificar el criterio y/o valor ingresados", 400);
+            return $this->view->response("Verificar el criterio ingresado", 400);
     }
 
     /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
@@ -73,7 +73,7 @@ Class jugadoresApiController{
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
             $jugadoresFiltrados= $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);
-            if($jugadoresFiltrados==null)
+            if($jugadoresFiltrados == null)
                 return $this->view->response("No hay ningun jugador con ese valor", 404);
             else
                 return $jugadoresFiltrados;
@@ -147,17 +147,10 @@ Class jugadoresApiController{
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
             return $this->view->response("Por favor complete todos los datos", 400);
-<<<<<<< HEAD
         }else if(($jugador->posicion != "Arquero") && ($jugador->posicion != "Defensor") && 
                  ($jugador->posicion != "Medio campista") && ($jugador->posicion != "Delantero")){
             return $this->view->response("Por favor complete la posición con una opción válida", 400);
         }else{
-=======
-        }else if(($jugador->posicion!="Arquero") && ($jugador->posicion!="Defensor") && ($jugador->posicion!="Medio campista") && ($jugador->posicion!="Delantero")){
-            return $this->view->response("Por favor complete la posicion con una opcion valida", 400);
-        }
-        else{
->>>>>>> 7912a30299542fbb9ac61d7dff64b3145a155d61
             if(in_array($jugador->id_pais, array_column($id_paises, 'id')))
                 return $jugador; 
             else 

@@ -150,12 +150,21 @@ Devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este
 > + Cuerpo de la respuesta
 >   - Listará los jugadores en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
 
-### Si los datos son incorrectos o se encuentran vacíos la respuesta será
+### Si el criterio no se corresponde con un atributo válido la respuesta será
 
 > + Código de respuesta
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
->   - "Verificar el filtro elegido como criterio y el valor ingresado."
+>   - "Verificar el criterio ingresado"
+
+
+### Si el orden no cumple con el formato indicado la respuesta será
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el orden elegido"
+
 
 ### Si el criterio es correcto pero el valor no existe la respuesta será
 
@@ -719,6 +728,10 @@ Por ejemplo:
 >   - "El pais no se pudo agregar con éxito".
 
 ## 5. ELIMINAR UN PAÍS
+
+> ### ¡IMPORTANTE! 
+> Solo se podrán borrar paises que no tengan ningún jugador asociado. 
+
 Para eliminar un país en el endpoint , el verbo, el recurso y el parámetro del recurso deben ser: 
 
 ```javascript
@@ -737,13 +750,19 @@ Ejemplo 2:
 ```
 Elimina de la tabla el paises con id igual a 1.
 
-### Si el ID corresponde a un país de la lista y se elimina con éxito la respuesta será::
+### Si el ID corresponde a un país de la lista y se elimina con éxito la respuesta será:
 
 > + Código de respuesta: 
 >   - 200 (Ok)
 > + Cuerpo de la respuesta: 
 >   - "El pais con el id :ID se eliminó con éxito".
 
+### Si el país que desea borrar tiene jugadores vinculados se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El pais no se pudo eliminar, porque contiene registros vinculados".
 
 ### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
 

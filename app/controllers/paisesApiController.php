@@ -71,7 +71,7 @@ Class paisesApiController{
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM paises WHERE $filtro = :valor";
             $paisesFiltrados=$this->model->obtenerPaisesFiltrados($sql, $_REQUEST['valor']);
-            if($paisesFiltrados==null)
+            if($paisesFiltrados == null)
                 return $this->view->response("No hay ningun pais con ese valor", 404);
             else
                 return $paisesFiltrados;     
@@ -84,14 +84,14 @@ Class paisesApiController{
         $this -> comprobarUsuarioValido();
         $pais = $this->verificarDatosPais();
         if($this->model->verificarPaisExistente($pais->clasificacion, $pais->nombre))
-            return $this->view->response("El pais o la clasificación ya existen", 400);
+            return $this->view->response("El país o la clasificación ya existen", 400);
         else{
             $id = $this->model->agregarPais($pais); 
             $paisAgregado = $this->model->obtenerPais($id);
             if($paisAgregado)
                 return $this->view->response($paisAgregado, 201);
             else
-                return $this->view->response("El pais no se pudo agregar con éxito", 500); 
+                return $this->view->response("El país no se pudo agregar con éxito", 500); 
         }
     }
 
@@ -101,7 +101,7 @@ Class paisesApiController{
         if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $id = $params[':ID'];
             if($this->modelJugadores->obtenerJugadoresPorPais($id) != null){
-                return $this->view->response("El pais no se pudo eliminar, porque contiene registros vinculados", 404);
+                return $this->view->response("El pais no se pudo eliminar, porque contiene registros vinculados", 400);
             }else{
                 if($this->model->obtenerPais($id)){
                     $this->model->eliminarPais($id);  
