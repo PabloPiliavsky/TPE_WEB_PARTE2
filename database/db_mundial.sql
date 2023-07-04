@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 02, 2023 at 11:09 PM
+-- Generation Time: Jul 04, 2023 at 10:57 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -59,7 +59,6 @@ INSERT INTO `jugadores` (`id`, `nombre`, `apellido`, `descripcion`, `posicion`, 
 (19, 'Benjamin Jacques Marcel ', 'Pavard', 'Benjamin Jacques Marcel Pavard es un futbolista francés que juega en la posición de defensa en el Bayern de Múnich de la Bundesliga de Alemania.', 'Defensor', 'https://digitalhub.fifa.com/transform/da501e75-e1c6-4db6-8d90-1af57d0a3d2a/France-s-defender-Benjamin-Pavard-celebrates-the-win-in-the-UEFA-EURO-2020-Group-F-football-match-between-France-and-Germany-at-the-Allianz-Arena-in-Munich-on-June-15-2021-Photo-by-Matthias-Schrader-POOL-AFP-Photo-by-MATTHIAS-SCHRADER-POOL-AFP-via-Getty-Images?io=transform:fill,height:485,width:746&quality=100', 2),
 (20, 'Raphaël Xavier ', 'Varane', 'Raphaël Xavier Varane es un futbolista francés de origen martiniqués que juega como defensa en el Manchester United F. C. de la Premier League de Inglaterra. Formado en las categorías inferiores del Racing Club de Lens, debutó en 2010 con el equipo del Paso de Calais en la Ligue 1, con apenas 17 años.', 'Defensor', 'https://estaticos-cdn.sport.es/clip/08a25de8-3c24-40c0-9e95-c78fb71e51dd_media-libre-aspect-ratio_default_0.jpg', 2),
 (21, 'Eduardo Celmi ', 'Camavinga ', 'Eduardo Celmi Camavinga es un futbolista francés nacido en Angola,  que juega como centrocampista en el Real Madrid C. F. de la Primera División de España. Además de la francesa, posee la nacionalidad angoleña —por nacimiento— y la congoleña —por ascendencia—', 'Medio campista', 'https://depor.com/resizer/JcvsLGqlfTLjUOWLX5n8A6nXAN4=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/AEP4G32CONEBLIBT4CP2NE7XOI.jpg ', 2),
-(22, 'Aurélien Djani', 'Tchouaméni ', 'Aurélien Djani Tchouaméni es un futbolista francés que juega como centrocampista en el Real Madrid C. F. de la Primera División de España.', 'Medio campista', 'https://media.tycsports.com/files/2022/06/07/437904/tchouameni-xavier-lainegetty-images_862x485.webp?v=2 ', 2),
 (23, 'Adrien', 'Rabiot-Provost', 'Adrien Rabiot-Provost es un futbolista francés. Juega de centrocampista y su equipo es la Juventus de Turín de la Serie A.', 'Medio campista', 'https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blta46fb913fff14093/60dbc9665e51ad3b1d277ff4/1305f12004cca36b07f0935029cf48531782a1c7.jpg?auto=webp&format=pjpg&width=1080&quality=60 ', 2),
 (24, 'Karim Mustafa ', 'Benzema', 'Karim Mustafa Benzema es un futbolista francés de ascendencia argelina que juega como delantero en el Real Madrid Club de Fútbol de la Primera División de España desde la temporada 2009-10. Fue internacional con selección de fútbol de Francia', 'Delantero', 'https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blte3ade1bfe6fcd20a/634d17b21f6f12784d5837da/GettyImages-1244015233.jpg?auto=webp&format=pjpg&width=1080&quality=60 ', 2),
 (25, 'Masour Ousmane ', 'Dembélé', 'Masour Ousmane Dembélé es un futbolista francés que juega como delantero en el F. C. Barcelona de la Primera División de España. Nacido en Vernon, Francia, en el departamento de Eure, Dembélé inició su carrera en Rennes previamente a unirse al Borussia Dortmund en 2016', 'Delantero', 'https://www.fcbarcelona.com/photo-resources/2022/11/02/c065cb6b-56a0-42e5-b303-2e128eb6171f/07-OUSMANE_DEMBELE.jpg?width=640&height=400', 2),
@@ -110,7 +109,19 @@ INSERT INTO `paises` (`id`, `nombre`, `continente`, `clasificacion`, `bandera`) 
 (1, 'Argentina', 'America', 1, 'https://c.files.bbci.co.uk/D348/production/_95588045_178392703.jpg'),
 (2, 'Francia', 'Europa', 2, 'https://banderas.top/wp-content/uploads/2022/09/Bandera-de-Napoleon.jpg'),
 (3, 'Croacia', 'Europa', 3, 'https://c4.wallpaperflare.com/wallpaper/703/478/458/bandera-croacia-europa-wallpaper-preview.jpg'),
-(4, 'Marruecos', 'Africa', 4, 'https://touringinmorocco.com/es/wp-content/uploads/2022/04/morocco-flag.jpg');
+(4, 'Marruecos', 'Africa', 4, 'https://touringinmorocco.com/es/wp-content/uploads/2022/04/morocco-flag.jpg'),
+(5, 'Paises Bajos', 'Europa', 5, 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/200px-Flag_of_the_Netherlands.svg.png'),
+(6, 'Brasil', 'America', 6, 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/200px-Flag_of_Brazil.svg.png'),
+(7, 'Inglaterra', 'Europa', 7, 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Flag_of_England.svg/200px-Flag_of_England.svg.png'),
+(8, 'Portugal', 'Europa', 8, 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/200px-Flag_of_Portugal.svg.png'),
+(9, 'Estados Unidos', 'America', 9, 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/200px-Flag_of_the_United_States.svg.png'),
+(10, 'Australia', 'Oceania', 10, 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Flag_of_Australia_%28converted%29.svg/200px-Flag_of_Australia_%28converted%29.svg.png'),
+(11, 'Japon', 'Asia', 11, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/200px-Flag_of_Japan.svg.png'),
+(12, 'Korea del Sur', 'Asia', 12, 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/200px-Flag_of_South_Korea.svg.png'),
+(13, 'Senegal', 'Africa', 13, 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Flag_of_Senegal.svg/200px-Flag_of_Senegal.svg.png'),
+(14, 'Polonia', 'Europa', 14, 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/200px-Flag_of_Poland.svg.png'),
+(15, 'España', 'Europa', 15, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/200px-Flag_of_Spain.svg.png'),
+(16, 'Suiza', 'Europa', 16, 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Switzerland.svg/200px-Flag_of_Switzerland.svg.png');
 
 -- --------------------------------------------------------
 
@@ -166,13 +177,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `jugadores`
 --
 ALTER TABLE `jugadores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `paises`
 --
 ALTER TABLE `paises`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
