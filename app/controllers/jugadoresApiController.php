@@ -30,7 +30,7 @@ Class jugadoresApiController{
             else
                 return $this->view->response("El jugador con el id ".$id." no existe", 404);
         }else
-            return $this->view->response("Por favor verifique los datos ingresados", 404);
+            return $this->view->response("Por favor verifique los datos ingresados", 400);
     }
 
     /*--Verifica si está seteado el orden, el filtro, la página o ninguno--*/
@@ -55,11 +55,11 @@ Class jugadoresApiController{
                 $orden = $_REQUEST['orden'];
                 $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
             }else
-                $sql = "SELECT * FROM jugadores ORDER BY $criterio"; //lo llamaria ascendentemente por defecto   
+                $sql = "SELECT * FROM jugadores ORDER BY $criterio";
             return $this->model->obtenerJugadoresOrdenados($sql);
         }
         else
-            return $this->view->response("Verificar la columna/atributo de la tabla elegida como criterio", 400);
+            return $this->view->response("Verificar el criterio y/o valor ingresados", 400);
     }
 
     /*--Si el filtro es correcto retorna los jugadores obtenidos que cumplen con dicho filtro--*/
@@ -81,21 +81,23 @@ Class jugadoresApiController{
                 return $this -> model -> paginar($sql); 
             }
             else
-                return $this->view->response("la pagina pedida con esa cantidad de filas no contiene elementos", 404);
+                return $this->view->response("La página pedida con esa cantidad de filas no contiene elementos", 404);
         }else 
-            return $this->view->response("Verificar que los parametros utilizados sean correctos. Ver más información en la documentación", 404);
+            return $this->view->response("Verificar que los parámetros utilizados sean correctos. Ver más información en la documentación", 400);
     }
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/
     public function agregarJugador(){
         $this -> comprobarUsuarioValido();
-        $jugador = $this->verificarDatosJugador();
-        $id = $this->model->agregarJugador($jugador); 
-        $jugador = $this->model->obtenerJugador($id);
-        if($jugador)
-            return $this->view->response($jugador, 201);
-        else
-            return $this->view->response("El jugador no se pudo agrear con éxito", 400); 
+        $jugadorCargado = $this->verificarDatosJugador();
+        if($jugadorCargado){
+            $id = $this->model->agregarJugador($jugadorCargado); 
+            $jugador = $this->model->obtenerJugador($id);
+            if($jugador)
+                return $this->view->response($jugador, 201);
+            else
+                return $this->view->response("El jugador no se pudo agrear con éxito", 500); 
+        }
     }
 
     /*--Si el id cumple con los requisitos se solicita eliminar el jugador y se retorna la respuesta con el código correspondiente--*/
@@ -107,10 +109,10 @@ Class jugadoresApiController{
                 $this->model->eliminarJugador($id); 
                 return $this->view->response("El jugador con el id ".$id." se eliminó con éxito", 200);
             }else
-                return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ".$id, 400);
+                return $this->view->response("El jugador no se pudo eliminar, porque no existe el id ".$id, 404);
         }
         else
-            return $this->view->response("Por favor verifique el id ingresado", 404);
+            return $this->view->response("Por favor verifique el id ingresado", 400);
     }
 
     /*--Verifica que exista el jugador con el id y si es así lo actualiza con los datos previamente comprobados--*/
@@ -121,9 +123,9 @@ Class jugadoresApiController{
             if($this->model->obtenerJugador($id)){
                 $jugador = $this->verificarDatosJugador();
                 $this->model->actualizarJugador($jugador, $id);  
-                return $this->view->response("El jugador con el id ".$id." se actualizó con éxito", 200);       
+                return $this->view->response($jugador, 200);       
             }else   
-                return $this->view->response("No existe ningún jugador con el id ingresado", 400);
+                return $this->view->response("No existe ningún jugador con el id ingresado", 404);
         }else    
             return $this->view->response("Por favor verifique que el id se ingresó correctamente", 400);
     }

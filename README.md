@@ -1,324 +1,745 @@
-Para obtener los datos las urls deben comenzar de la siguiente manera:
-
-    http://localhost/tucarpeta/api/jugadores
-    http://localhost/tucarpeta/api/paises
-    http://localhost/tucarpeta/api/usuario
+# SERVICIOS REST
+Por medio de la API Rest brinda integración con otros sistemas por lo cuál podrás acceder y/o modificar la información mediante los métodos HTTP, lo que te permitirá acceder a ellos mediante URLs (endpoints). La información devuelta puede ser en formato JSON, XML, entre otros. En este caso te recomendamos utilizar el formato JSON para las altas y modificaciones.
 
 
---------------------------------------------------- USUARIO ---------------------------------------------------------
-¡IMPORTANTE!
+### FORMATOS DE LAS URLS
++ Para realizar cualquiera de las acciones de CRUD, las urls deben comenzar de la siguiente manera:
 
-    Los usuarios con permisos habilitados son ----> "Martin", "Mariano" o "Creadores".
-    Las contraseñas en todos los casos es     ----> 12345
+    - <http://localhost/tu_carpeta_local/api/jugadores>
 
-1- Para poder agreagar/eliminar/actualizar un jugador/país se debe proporcionar un token el cuál se puede obtener luego de verificar usuario y contraseña. 
+    - <http://localhost/tu_carpeta_local/api/paises>
 
-Para hacerlo debe realizar los siguientes pasos: 
+    - <http://localhost/tu_carpeta_local/api/usuario>
 
-    1.1- Ingresar con la url 
 
-        POST usuario
+# USUARIO
 
-        En el body de la request se deben ingresar los datos con el siguiente formato:
+Para poder **agreagar/eliminar/actualizar** un jugador ó un país se debe proporcionar un **TOKEN** el cuál se puede obtener luego de verificar usuario y contraseña.
 
-            {
-                "usuario": "usuario",
-                "password": "pasword"
-            }
+Para realizar con éxito las tareas de alta/baja/modificación debe realizar los siguientes pasos: 
 
-        Por ejemplo: 
+## 1. INGRESAR AL ENDPOINT DE USUARIO
 
-            {
-                "usuario": "Martin",
-                "password": 12345
-            }
+```javascript
+POST usuario
+```
++ En el body de la __request__ se deben ingresar los datos en formato **JSON** como se indica a continuación:
+```javascript
+    {
+       "usuario": "usuario",
+       "password": "pasword"
+    }
+```
+Por ejemplo: 
+```javascript
+    {
+       "usuario": "Martin",
+       "password": 12345
+    }
+```
+## Los usuarios y contraseñas con permisos habilitados para realizar modificaciones son:
 
-        En el body de la response se le proporcionará el token el cuál deberá copiar.
+Usuario     | Contraseña  
+----------- | -----------
+Martin      |    12345
+Mariano     |    12345
+Creadores   |    12345
 
-    1.2- Ingresar a la url deseada por ejemplo para agregar un pais:
+En el body de la **response** se le proporcionará el **TOKEN** el cuál deberá copiar (solo lo que figura dentro de las comillas sin incluirlas).
 
-        POST paises
+Por ejemplo: 
 
-        En el body deberá ingresar los datos que desea agregar como se muestra en el punto 4 de la sección PAISES.
+```javascript
+    {
+       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.       eyJzdWIiOjEsImlhdCI6MTY4ODQxMDk4NCwiZXhwIjoxNjg4NDE0NTg0LCJkYXRhIjoiTWFydGluIn0=.VIUiGOxDahr1p31Z3ki989dp5vVViqUa1YWvJUI4z7g="
+    }
+```
+Es decir, solo debería copiar:
+
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY4ODQxMDk4NCwiZXhwIjoxNjg4NDE0NTg0LCJkYXRhIjoiTWFydGluIn0=.VIUiGOxDahr1p31Z3ki989dp5vVViqUa1YWvJUI4z7g=
+### Si los campos de _usuario_ y/o _password_ se encuentran vacíos recibirá la siguiente respuesta:
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Debe indicar el nombre de usuario y/o password."
+
+## 2. AGREGAR EL ENDPOINT DESEADO
+Por ejemplo, para agregar un país, debe ser:
+```javascript
+    POST paises
+```
+En el body de la **request** deberá ingresar los datos del país que se quiere agregar como se muestra en el punto 4 de la sección PAISES.
         
-    1.3- En el apartado autorization:
+## 3. AUTORIZACIÓN:
+En el apartado Autorization se deberá elegir el tipo **Bearer Token** y pegar el **TOKEN** previamente copiado.
 
-        Se deberá elegir el tipo Bearer Token y pegar el token previamente proporcionado.
-
-    1.4- Si el token es correcto y los datos son ingresados de manera adecuada se podrán realizar las acciones mencionadas: editar/agregar/eliminar tanto para jugadores como para paises. 
-
+Si el token es correcto y los datos son ingresados de manera adecuada se podrán realizar las acciones mencionadas: editar/agregar/eliminar tanto para jugadores como para paises. 
 
 
---------------------------------------------------- JUGADORES --------------------------------------------------------
-1- Para obtener todos los jugadores el verbo y el recuerso deben ser:
+# JUGADORES
 
-        GET jugadores
+> ### **¡IMPORTANTE!**
+>
+> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el _endpoint:
+>
+>  #### **EN EL ENDPOINT:**
+> + El valor de __:ID__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
+>
+> #### **EN EL CUERPO DE LA _REQUEST_**
+> + Los valores ingresados en __id_pais__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
+> + Los valores referenciados hasta el momento son:
+>   - 1: Argentina
+>   - 2: Francia 
+>   - 3: Croacia 
+>   - 4: Marruecos
+> + Los valores permitidos en  __posicion__ pueden variar unicamente entre:
+>   - Arquero
+>   - Defensor
+>   - Delantero
+>   - Medio Campista
 
 
-1.1- Si desea filtrarlos debe agregar los query params "filtrar" que debe indicar el atributo/columna de la tabla y "valor" que debe indicar el valor de la columna por el que se quiere filtrar. La url debe tener la sigiente forma:
+## 1. LISTAR TODOS LOS JUGADORES.
+Para obtener todos los jugadores, en el endpoint, el verbo y el recurso deben ser:
+```javascript
+    GET jugadores
+```
+### La respuesta mostrará lo siguiente
 
-        GET jugadores?filtrar=filtrar&valor=valor
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará la totalidad de los jugadores en formato JSON, ordenados por id ascendentemente a menos que se indique mediante query params que desea mostrarlos filtrados, ordenados (con otro criterio u orden) o paginados.
 
-        los parámetros correctos para "filtrar" pueden ser:
-            -id
-            -nombre
-            -apellido
-            -posicion
-            -id_pais
-        El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
+## 1.1 FILTRADO:
+Para filtrar la obtención de los jugadores debe agregar los query params **filtrar** que debe indicar el atributo/criterio a filtrar y **valor** en el cuál se debe indicar el valor del filtro especificado. 
 
-        Por ejemplo:
-            GET jugadores?filtrar=posicion&valor=defensor => devuelve todos los jugadores que se desempeñan como defensores.
++ El endoint debe tener la sigiente forma:
 
-            GET jugadores?filtrar=id_pais&valor=2 => devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este caso, Francia.
+```javascript
+GET jugadores?filtrar=filtrar&valor=valor
+```
++ los parámetros correctos para "filtrar" pueden ser:
+    - id
+    - nombre
+    - apellido
+    - posicion
+    - id_pais
 
-1.2- Si desea ordenarlos debe agregar los query params "criterio", que toma el atributo/columna de la tabla, y "orden" que toma valores para ordenarlo ascendentemente o descendentemente:
++ El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
 
-        GET jugadores?criterio=criterio&orden=orden
-        GET jugadores?criterio=criterio
+Ejemplo 1:
 
-        En ambas opciones el criterio para poder ordenar puede ser:
-            -id
-            -nombre
-            -apellido
-            -descripcion
-            -posicion
-            -foto
-            -id_pais
-        El parámetro orden puede tomar los valores ASC/DESC
-            -ASC los ordenará ascendentemente (por defecto)
-            -DESC los listará en orden descendente
+```javascript
+GET jugadores?filtrar=posicion&valor=defensor
+```
+Devuelve todos los jugadores que se desempeñan como defensores.
 
-        En la segunda opción donde no se ingresa el parámetro orden, por defecto se mostrarán 
-        de manera ascendente. 
+Ejemplo 2:
+
+```javascript
+GET jugadores?filtrar=id_pais&valor=2
+```
+Devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este caso, Francia.
+
+### Si los datos son ingresados correctamente la respuesta mostrará lo siguiente
+
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará los jugadores en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
+
+### Por el contrario, si los datos son incorrectos o se encuentran vacíos la respuesta será
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el filtro elegido como criterio y el valor ingresado."
+
+## 1.2 ORDENADO:
+Para ordenar la obtención de todos los jugadores debe agregar los query params **criterio** (que debe indicar el atributo con el cuál desea ordenar) y **orden** (que indicará el valor para ordenarlo ascendentemente o descendentemente):
+
+Opción 1:
+```javascript
+    GET jugadores?criterio=criterio&orden=orden
+```
+Opción 2:
+```javascript
+    GET jugadores?criterio=criterio
+```
+
++ En ambas opciones el **criterio** para poder ordenar puede ser:
+    - id
+    - nombre
+    - apellido
+    - descripcion
+    - posicion
+    - foto
+    - id_pais
+
++ El la opción 1 el parámetro **orden** puede tomar los valores *ASC/DESC* ó *asc/desc*.
+    - ASC los ordenará ascendentemente (por defecto)
+    - DESC los listará en orden descendente
+
++ En la opción 2 donde no se ingresa el parámetro orden, por defecto se mostrarán de manera ascendente. 
         
-        Por ejemplo:
+Ejemplo 1: 
 
-            GET jugadores?criterio=nombre&orden=ASC => devuelve la lista de jugadores por orden alfabético ascendente de sus nombres.
+```javascript
+    GET jugadores?criterio=nombre&orden=ASC 
+```
+Devuelve la lista de jugadores por orden alfabético ascendente de sus nombres.
 
-            GET jugadores?criterio=id_pais&orden=DESC => devuelve la lista de jugadores ordenados por id_pais de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
+Ejemplo 2:
+```javascript
+    GET jugadores?criterio=id_pais&orden=DESC 
+```
+Devuelve la lista de jugadores ordenados por id_pais de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
 
+### En cualquiera de los casos si los parámetros son correctos la respuesta será
 
-1.3- Si desea paginar la lista de jugadores debe agregar los query params "pagina", que indicará el numero de pagina que quiere mostrar, y "filas" que indicará la cantidad de filas por página:
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará todos los jugadores en formato JSON, ordenados por el criterio y orden especificados.
 
-        GET jugadores?pagina=pagina&filas=filas
+### Si los datos son incorrectos o se encuentran vacíos la respuesta será
 
-        Los valores de "página" y "filas" deben ser enteros > 0, por lo cuál tampoco pueden ser strings ni caractéres especiales.
-        En caso de que la cantidad de filas o páginas queden "fuera de rango" se mostrará el mensaje "No se encontraron jugadores" ya que devolveria un JSON vacio.
-
-        Por ejemplo:
-
-            GET jugadores?pagina=2&filas=5 => Divide la lista en grupos (páginas) de a 5 y muestra el segundo de ellos.
-
-            GET jugadores?pagina=5&filas=10 => Divide la lista en grupos (páginas) de a 10 y muestra el quinto de ellos.
-
-
-2- Para obtener los datos de un jugador el verbo, el recurso y el parámetro del recurso deben ser:
-
-        GET jugadores/:ID
-
-        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
-
-        Por ejemplo
-            GET jugadores/15 => muestra los datos del jugador con id 15.
-
-            GET jugadores/21 => muestra los datos del jugador con id 21.
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el criterio y/o valor ingresados"
 
 
-3- Para actualizar/editar un jugador el verbo, el recurso y el parámetro del recurso deben ser:
+## 1.3 PAGINACIÓN:
+Si desea paginar la lista de jugadores debe agregar los query params **pagina**, que indicará el numero de página que quiere mostrar y **filas** que hace referencia a la cantidad de registros obtenidos por página:
 
-        PUT jugadores/:ID
-    
-        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales..
+```javascript
+    GET jugadores?pagina=pagina&filas=filas
+```
++ Los valores de _pagina_ y _filas_ deben ser enteros > 0, por lo cuál tampoco pueden ser strings ni caractéres especiales.
 
-        En el body de la request se deben ingresar los datos con el siguiente formato:
-            {
-                "nombre": "nombre del jugador",
-                "apellido": "apellido del jugador",
-                "descripcion": "Breve descripción del jugador",
-                "posicion": "posición principal en la que participa para la seleccion actualmente",
-                "foto": "url de la imágen del jugador",
-                "id_pais": "el id que referencia al pais al que perteneces"
-            }
-        Por ejemplo:
-            {
-                "nombre": "Lionel Andres",
-                "apellido": "Messi Cuccittini",
-                "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
-                "posicion": "Delantero",
-                "foto": ""https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD"",
-                "id_pais": "1"
-            }
+Ejemplo 1: 
 
-        Los valores ingresados en posición pueden variar unicamente entre:
-            -Arquero
-            -Defensor
-            -Delantero
-            -Medio Campista
-            
-        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales.Los valores referenciados hasta el momento son [1->Argentina, 2->Francia, 3->Croacia, 4->Marruecos]
+```javascript
+    GET jugadores?pagina=2&filas=5 
+```
+Divide la lista en grupos (páginas) de a 5 y muestra el segundo de ellos.
 
-
-4- Para agregar un nuevo jugador el verbo y el recurso deben ser: 
-
-        POST jugadores
-
-        En el body de la request se deben ingresar los datos con el siguiente formato:
-            {
-                "nombre": "nombre del jugador",
-                "apellido": "apellido del jugador",
-                "descripcion": "Breve descripción del jugador",
-                "posicion": "posición principal en la que participa para la seleccion actualmente",
-                "foto": "url de la imágen del jugador",
-                "id_pais": "el id que referencia al pais al que perteneces"
-            }
-
-        Por ejemplo:
-        {
-            "nombre": "Lionel Andres",
-            "apellido": "Messi Cuccittini",
-            "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
-            "posicion": "Delantero",
-            "foto": ""https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD"",
-            "id_pais": "1"
-        }
-
-        Los valores ingresados en posición pueden variar unicamente entre:
-            -Arquero
-            -Defensor
-            -Delantero
-            -Medio Campista
-            
-        Los valores de id_pais deben ser un número entero > 0. No se aceptarán strings ni caractéres especiales.Los valores referenciados hasta el momento son [1->Argentina, 2->Francia, 3->Croacia, 4->Marruecos]
-
-
-5- Para eliminar un jugador el verbo, el recurso y el parámetro del recurso deben ser: 
-
-        DELETE jugadores/:ID
-
-        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
-
-        Por ejemplo:
-            DELETE jugadores/3 => elimina de la tabla el jugador con id igual a 3.
-            
-            DELETE jugadores/17 => elimina de la tabla el jugador con id igual a 17.
+Ejemplo 2:
+```javascript
+    GET jugadores?pagina=5&filas=10 
+```
+Divide la lista en grupos (páginas) de a 10 y muestra el quinto de ellos.
 
 
 
+### En caso de que la cantidad de filas o páginas queden "fuera de rango" la respuesta será:
 
---------------------------------------------------- PAISES --------------------------------------------------------
+> + Código de respuesta
+>   - 404 (Not found).
+> + Cuerpo de la Respuesta 
+>   - "La página pedida con esa cantidad de filas no contiene elementos."
 
-1- Para obtener todos los paises el verbo y el recuerso deben ser:
+Debido a que devolveria un JSON vacio.
 
-        GET paises
+### Si los datos estan vacíos o no cumplen con el formato inicado la respuesta será:
+> + Código de respuesta
+>   - 400 (Bad request).
+> + Cuerpo de la Respuesta 
+>   - "Verificar que los parámetros utilizados sean correctos. Ver más información en la documentación"
+
+### Si los parámetros son correctos y existen registros en la página indicada la respuesta será
+
+> + Código de respuesta:
+>   - 200 (Ok)
+> + Cuerpo de la respuesta 
+>   - Listará todos los registros que se encuentren dentro de ese rango de página/filas.
+
+## 2. OBTENER DATOS DE UN JUGADOR ESPECÍFICO:
+
+Para obtener los datos de un jugador en particular en el endpoint, el verbo, el recurso y el parámetro del recurso deben ser:
+
+```javascript
+    GET jugadores/:ID
+```
+
+Ejemplo 1:
+```javascript
+    GET jugadores/15 
+```
+Muestra los datos del jugador con id 15.
+  
+Ejemplo 2:
+```javascript
+    GET jugadores/21
+```
+Muestra los datos del jugador con id 21.
+
+### Si el ID ingresado es válido y corresponde con el de un jugador la respuesta será:
+
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del jugador seleccionado.
+
+### Si el ID ingresado no corresponde a ningún jugador de la lista, la respuesta será:
+
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "El jugador con el id ":ID" no existe".
+
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique los datos ingresados".
 
 
-1.1- Si desea filtrarlos debe agregar los query params "filtrar" que debe indicar el atributo/columna de la tabla y "valor" que debe indicar el valor de la columna por el que se quiere filtrar. La url debe tener la sigiente forma:
+## 3. ACTUALIZAR/EDITAR UN JUGADOR:
+Para actualizar/editar un jugador en el endpoint, el verbo, el recurso y el parámetro del recurso deben ser:
 
-        GET paises?filtrar=filtrar&valor=valor
+```javascript
+    PUT jugadores/:ID
+```  
 
-        los parámetros correctos para "filtrar" pueden ser:
-            -id
-            -nombre
-            -continente
-            -clasificacion
-        El "valor" puede variar según la columna o atributo de la tabla que desee filtrar.
+En el body de la request se deben ingresar los datos con el siguiente formato:
+```javascript
+    {
+        "nombre": "nombre del jugador",
+        "apellido": "apellido del jugador",
+        "descripcion": "Breve descripción del jugador",
+        "posicion": "posición principal en la que participa para la seleccion actualmente",
+        "foto": "url de la imágen del jugador",
+        "id_pais": "el id que referencia al pais al que perteneces"
+    }
+```   
+Por ejemplo:
+```javascript
+    {
+        "nombre": "Lionel Andres",
+        "apellido": "Messi Cuccittini",
+        "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
+        "posicion": "Delantero",
+        "foto": "https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD",
+        "id_pais": 1
+    }
+```  
+### Si existe un jugador con el ID especificado y los datos ingresados son correctos la respuesta será:
 
-        Por ejemplo:
-            GET paises?filtrar=continente&valor=Europa => devuelve todos los paises Europeos que hayan clasificado.
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del jugador actualizado.
 
-1.2- Si desea ordenarlos debe agregar los query params "criterio", que toma el atributo/columna de la tabla, y "orden" que toma valores para ordenarlo ascendentemente o descendentemente:
+### Si el ID ingresado no corresponde a ningún jugador de la lista, la respuesta será:
 
-        GET paises?criterio=criterio&orden=orden
-        GET paises?criterio=criterio
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "No existe ningún jugador con el id ingresado".
 
-        En ambas opciones el criterio para poder ordenar puede ser:
-            -id
-            -nombre
-            -continente
-            -clasificacion
-            -bandera
-        El parámetro orden puede tomar los valores ASC/DESC
-            -ASC los ordenará ascendentemente (por defecto)
-            -DESC los listará en orden descendente
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
 
-        En la segunda opción donde no se ingresa el parámetro "orden", por defecto se mostrarán 
-        de manera ascendente. 
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique que el id se ingresó correctamente".
+
+## 4. AGREGAR UN JUGADOR
+ Para agregar un nuevo jugador en el endpoint, el verbo y el recurso deben ser: 
+```javascript
+    POST jugadores
+``` 
+En el body de la request se deben ingresar los datos con el siguiente formato:
+```javascript
+    {
+        "nombre": "nombre del jugador",
+        "apellido": "apellido del jugador",
+        "descripcion": "Breve descripción del jugador",
+        "posicion": "posición principal en la que participa para la seleccion actualmente",
+        "foto": "url de la imágen del jugador",
+        "id_pais": "el id que referencia al pais al que perteneces"
+    }
+``` 
+Por ejemplo:
+```javascript
+    {
+        "nombre": "Lionel Andres",
+        "apellido": "Messi Cuccittini",
+        "descripcion": "Lionel Andrés Messi Cuccittini, conocido como Leo Messi, es un futbolista argentino que juega como delantero o centrocampista. Jugador histórico del Fútbol Club Barcelona, al que estuvo ligado veinte años, desde 2021 integra el plantel del Paris Saint-Germain de la Ligue 1 de Francia.",
+        "posicion": "Delantero",
+        "foto": "https://library.sportingnews.com/styles/crop_style_16_9_desktop_webp/s3/2022-12/Lionel%20Messi%20-%20World%20Cup%20Final%202022%20penalty%20celebration%20vs%20France%20-%20181222-16x9.jpg.webp?itok=VSk6gUGD",
+        "id_pais": 1
+    }
+``` 
+### Si los datos ingresados son correctos la respuesta será:
+
+> + Código de respuesta: 
+>   - 201 (Created)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del jugador agregado.
+
+### Si hay datos vacíos en el cuerpo de la request la respuesta será:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor complete todos los datos".
+
+### Si el id_pais ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El id del pais no es correcto".
+
+### Si ocurre algun error al agregar el jugador en la base de datos la respuesta será:
+> + Código de respuesta: 
+>   - 500 (Internal Server Error)
+> + Cuerpo de la respuesta: 
+>   - "El jugador no se pudo agrear con éxito".
+
+
+## 5. ELIMINAR UN JUGADOR
+Para eliminar un jugador en el endpoint el verbo, el recurso y el parámetro del recurso deben ser: 
+```javascript
+    DELETE jugadores/:ID
+``` 
+
+Ejemplo 1: 
+```javascript
+    DELETE jugadores/3 
+``` 
+Elimina de la tabla el jugador con id igual a 3.
+
+Ejemplo 2:
+```javascript           
+    DELETE jugadores/17 
+``` 
+Elimina de la tabla el jugador con id igual a 17.
+
+### Si el ID corresponde a un jugador de la lista y se elimina con éxito la respuesta será::
+
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - "El jugador con el id ":ID" se eliminó con éxito".
+
+
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique el id ingresado".
+
+### Si el ID ingresado no se condice con el de algún jugador la srespuesta será:
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "El jugador no se pudo eliminar, porque no existe el id :ID"
+
+
+# PAISES 
+
+>### **¡IMPORTANTE!**
+>
+> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el endpoint:
+>
+> #### EN EL ENDPOINT:
+> + El valor de __:ID__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
+>
+> #### EN EL CUERPO DE LA _REQUEST_
+> + Los valores ingresados en __nombre__ y __clasificacion__ son únicos es decir, no pueden repetirse.
+
+
+
+## 1. LISTAR TODOS LOS PAISES
+Para obtener todos los paises en el endpoint, el verbo y el recuerso deben ser:
+```javascript  
+    GET paises
+```  
+### La respuesta mostrará lo siguiente
+
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará la totalidad de los paises en formato JSON, ordenados por id ascendentemente a menos que se indique mediante query params que desea mostrarlos filtrados u ordenados (con otro criterio u orden).
+
+## 1.1 FILTRADO
++ Si desea filtrarlos debe agregar los query params **filtrar** (que indica el criterio/atributo con el cual quiere filtrar) y **valor** (donde debe indicar el valor por el cual debe filtrarse). 
++ El endpoint debe tener la siguiente forma:
+
+```javascript
+    GET paises?filtrar=filtrar&valor=valor
+```
++ Los parámetros correctos para **filtrar** pueden ser:
+    - id
+    - nombre
+    - continente
+    - clasificacion
++ El **valor** puede variar según el atributo de la tabla que desee filtrar.
+
+Por ejemplo:
+```javascript
+    GET paises?filtrar=continente&valor=Europa 
+```
+Devuelve todos los paises Europeos que hayan clasificado.
+
+### Si los datos son ingresados correctamente la respuesta mostrará lo siguiente
+
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará los paises en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
+
+### Por el contrario, si los datos son incorrectos o se encuentran vacíos la respuesta será
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el filtro elegido como criterio y/o el valor ingresado"
+
+## 1.2. ORDENADO
+Si desea ordenarlos debe agregar los query params **criterio** (que indica el atributo/columna de la tabla) y **orden** (donde debe indicar los valores para ordenarlo ascendente o descendentemente):
+
++ La url debe puede variar entre las siguientes opciones:
+
+Opción 1: 
+```javascript
+    GET paises?criterio=criterio&orden=orden
+```
+
+Opción 2:
+```javascript
+    GET paises?criterio=criterio
+```
++ En ambas opciones el "query params" _criterio_ para poder ordenar puede ser:
+    - id
+    - nombre
+    - continente
+    - clasificacion
+    - bandera
+
++ En la opción 1 el parámetro _orden_ puede tomar los valores ASC/DESC o asc/desc unicamente.
+    - ASC ó asc los ordenará ascendentemente
+    - DESC ó desc los listará en orden descendente
+
++ En la opción 2 donde no se ingresa el parámetro _orden_, por defecto se mostrarán de manera ascendente. 
         
-        Por ejemplo:
+Ejemplo 1:
+```javascript
+    GET paises?criterio=nombre&orden=ASC 
+```
+Devuelve la lista de paises por orden alfabético ascendente de sus nombres.
 
-            GET paises?criterio=nombre&orden=ASC => devuelve la lista de paises por orden alfabético ascendente de sus nombres.
-
-            GET paises?criterio=id&orden=DESC => devuelve la lista de paises ordenados por id de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
-
-
-2- Para obtener los datos de un país: el verbo, el recurso y el parámetro del recurso deben ser:
-
-        GET paises/:ID
-
-        El valor de :ID debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
-
-        Por ejemplo
-
-            GET paises/15 => muestra los datos del país con id 15.
-
-            GET paises/21 => muestra los datos del país con id 21.
+Ejemplo 2:
+```javascript
+    GET paises?criterio=id&orden=DESC 
+```
+Devuelve la lista de paises ordenados por id de forma descendente, o sea, empezando del que tenga el id mayor hasta el menor.
 
 
-3- Para actualizar/editar un país el verbo, el recurso y el parámetro del recurso deben ser:
+### En cualquiera de los casos si los parámetros son correctos la respuesta será
 
-        PUT paises/:ID
-    
-        El valor de :ID debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales..
+> + Código de respuesta
+>   - 200 (Ok)
+> + Cuerpo de la respuesta
+>   - Listará todos los paises en formato JSON, ordenados por el criterio y orden especificados.
 
-        En el body de la request se deben ingresar los datos con el siguiente formato:
-            {
-                "nombre": "nombre",
-                "continente": "continente",
-                "clasificacion": int,
-                "bandera": "url de la bandera"
-            }
-        por ejemplo:
-            {
-                "nombre": "Marruecos",
-                "continente": "Africa",
-                "clasificacion": 4,
-                "bandera": "https://touringinmorocco.com/es/wp-content/uploads/2022/04/morocco-flag.jpg"
-            }
+### Si los datos son incorrectos o se encuentran vacíos la respuesta será
 
-        IMPORTANTE : Los valores ingresados en "nombre" y "clasificacion" son únicos es decir, no pueden repetirse.
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el criterio elegido y/o el valor ingresado"
+
+## 2. OBTENER LOS DATOS DE UN PAÍS ESPECÍFICO
+Para obtener los datos de un país en el endpoint, el verbo, el recurso y el parámetro del recurso deben ser:
+
+```javascript
+    GET paises/:ID
+```
+
+Ejemplo 1:
+```javascript
+    GET paises/15 
+```
+Muestra los datos del país con id 15.
+
+Ejemplo 2:
+```javascript
+    GET paises/21 
+```
+Muestra los datos del país con id 21.
+
+### Si el ID ingresado es válido y corresponde con el de un país la respuesta será:
+
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del país seleccionado.
+
+### Si el ID ingresado no corresponde a ningún país de la lista, la respuesta será:
+
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "El pais con el id :ID no existe".
+
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique los datos ingresados".
+
+## 3. ACTUALIZAR/EDITAR UN PAÍS
+Para actualizar/editar un país en el endpoint el verbo, el recurso y el parámetro del recurso deben ser:
+
+```javascript
+    PUT paises/:ID
+```    
+
+En el body de la request se deben ingresar los datos con el siguiente formato:
+```javascript
+    {
+        "nombre": "nombre",
+        "continente": "continente",
+        "clasificacion": int,
+        "bandera": "url de la bandera"
+    }
+```
+Por ejemplo:
+```javascript
+    {
+        "nombre": "Marruecos",
+        "continente": "Africa",
+        "clasificacion": 4,
+        "bandera": "https://touringinmorocco.com/es/wp-content/uploads/2022/04/morocco-flag.jpg"
+    }
+```
+### Si existe un país con el ID especificado y los datos ingresados son correctos la respuesta será:
+
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del país actualizado.
+
+### Si el ID ingresado no corresponde a ningún país de la lista, la respuesta será:
+
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "No existe ningún país con el id ingresado".
+
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique que el id se ingresó correctamente".
+
+### Si el nombre o la clasificación se modifican y ya existen en la base de datos se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El nombre o la clasificación no se pueden repetir".
 
 
-4- Para agregar un nuevo jugador el verbo y el recurso deben ser: 
+## 4. AGREGAR UN PAÍS
+Para agregar un nuevo país, en el endpoint, el verbo y el recurso deben ser: 
 
-        POST paises
+```javascript
+    POST paises
+```
+En el body de la _request_ se deben ingresar los datos con el siguiente formato:
+```javascript
+    {
+        "nombre": "nombre",
+        "continente": "continente",
+        "clasificacion": int,
+        "bandera": "url de la bandera"
+    }
+```
+Por ejemplo:
+```javascript
+    {
+        "nombre": "Argentina",
+        "continente": "America",
+        "clasificacion": 1,
+        "bandera": "https://c.files.bbci.co.uk/D348/production/_95588045_178392703.jpg"
+    }
+```
 
-        En el body de la request se deben ingresar los datos con el siguiente formato:
-            {
-                "nombre": "nombre",
-                "continente": "continente",
-                "clasificacion": int,
-                "bandera": "url de la bandera"
-            }
+### Si los datos ingresados son correctos la respuesta será:
 
-        Por ejemplo:
-            {
-                "nombre": "Argentina",
-                "continente": "America",
-                "clasificacion": 1,
-                "bandera": "https://c.files.bbci.co.uk/D348/production/_95588045_178392703.jpg"
-            }
+> + Código de respuesta: 
+>   - 201 (Created)
+> + Cuerpo de la respuesta: 
+>   - Mostrará en formato JSON los datos del país agregado.
 
-        IMPORTANTE : Los valores ingresados en "nombre" y "clasificacion" son únicos es decir, no pueden repetirse.
-       
+### Si hay datos vacíos en el cuerpo de la request la respuesta será:
 
-5- Para eliminar un país, el verbo, el recurso y el parámetro del recurso deben ser: 
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor complete todos los datos".
 
-        DELETE paises/:ID
+### Si el nombre o la clasificación ingresados ya existen en la base de datos se mostrará lo siguiente:
 
-        El valor de :ID debe ser un entero > 0, por lo que tampoco no se aceptarán letras, ni caractéres especiales.
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El pais o la clasificación ya existen".
 
-        Por ejemplo:
-            DELETE paises/3 => elimina de la tabla el paises con id igual a 3.
-            
-            DELETE paises/1 => elimina de la tabla el paises con id igual a 1.
+### Si ocurre algun error al agregar el jugador en la base de datos la respuesta será:
+> + Código de respuesta: 
+>   - 500 (Internal Server Error)
+> + Cuerpo de la respuesta: 
+>   - "El pais no se pudo agregar con éxito".
+
+## 5. ELIMINAR UN PAÍS
+Para eliminar un país en el endpoint , el verbo, el recurso y el parámetro del recurso deben ser: 
+
+```javascript
+    DELETE paises/:ID
+```
+
+Ejemplo 1:
+```javascript
+    DELETE paises/3 
+```
+Elimina de la tabla el paises con id igual a 3.
+
+Ejemplo 2:
+```javascript           
+    DELETE paises/1 
+```
+Elimina de la tabla el paises con id igual a 1.
+
+### Si el ID corresponde a un país de la lista y se elimina con éxito la respuesta será::
+
+> + Código de respuesta: 
+>   - 200 (Ok)
+> + Cuerpo de la respuesta: 
+>   - "El pais con el id :ID se eliminó con éxito".
+
+
+### Si el ID ingresado no cumple con el formato indicado o se encuentra vacío se mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "Por favor verifique el id ingresado".
+
+### Si el ID ingresado no se condice con el de algún jugador la srespuesta será:
+> + Código de respuesta: 
+>   - 404 (Not found)
+> + Cuerpo de la respuesta: 
+>   - "El pais no se pudo eliminar, porque no existe el id :ID"
