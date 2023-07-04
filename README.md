@@ -494,8 +494,12 @@ Elimina de la tabla el jugador con id igual a 17.
 > #### EN EL CUERPO DE LA _REQUEST_
 > + Los valores ingresados en __nombre__ y __clasificacion__ son únicos es decir, no pueden repetirse.
 > + El valor ingresados en  __clasificacion__ debe ser un entero > 0.
-
-
+> + Los valores permitidos en  __continente__ pueden variar unicamente entre:
+>   - America
+>   - Africa
+>   - Asia
+>   - Europa
+>   - Oceania
 
 ## 1. LISTAR TODOS LOS PAISES
 Para obtener todos los paises en el endpoint, el verbo y el recuerso deben ser:
@@ -705,6 +709,13 @@ Por ejemplo:
 > + Cuerpo de la respuesta: 
 >   - "Por favor verifique que el id se ingresó correctamente".
 
+### Si el continente ingresado no cumple con las opciones especificadas mostrará lo siguiente:
+
+> + Código de estado HTPP: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El continente indicado no existe".
+
 ### Si el nombre o la clasificación se modifican y ya existen en la base de datos se mostrará lo siguiente:
 
 > + Código de estado HTPP: 
@@ -765,6 +776,13 @@ Por ejemplo:
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta: 
 >   - "La clasificación debe ser un número mayor a 0".
+
+### Si el continente ingresado no cumple con las opciones especificadas mostrará lo siguiente:
+
+> + Código de estado HTPP: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "El continente indicado no existe".
 
 ### Si ocurre algun error al agregar el jugador en la base de datos la respuesta será:
 > + Código de estado HTPP: 
