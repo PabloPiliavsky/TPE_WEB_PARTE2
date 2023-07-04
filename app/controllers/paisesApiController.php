@@ -52,9 +52,9 @@ Class paisesApiController{
         if($this->verificarAtributos($criterio)){
             if(isset($_REQUEST['orden'])){
                 $orden = $_REQUEST['orden'];
-                if($orden == null || $orden =="asc" || $orden =="ASC" || $orden == "desc" || $orden == "DESC"){
-                $sql = "SELECT * FROM paises ORDER BY $criterio $orden";
-                return $this->model->obtenerPaisesOrdenados($sql);
+                if($orden == null || $orden == "asc" || $orden == "ASC" || $orden == "desc" || $orden == "DESC"){
+                    $sql = "SELECT * FROM paises ORDER BY $criterio $orden";
+                    return $this->model->obtenerPaisesOrdenados($sql);
                 }else
                     return $this->view->response("Verificar el orden elegido", 400);
             }else{
