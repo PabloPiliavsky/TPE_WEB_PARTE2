@@ -107,7 +107,7 @@ Class jugadoresApiController{
             if($jugador)
                 return $this->view->response($jugador, 201);
             else
-                return $this->view->response("El jugador no se pudo agrear con éxito", 500); 
+                return $this->view->response("El jugador no se pudo agregar con éxito", 500); 
         }
     }
 
@@ -148,7 +148,7 @@ Class jugadoresApiController{
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
             return $this->view->response("Por favor complete todos los datos", 400);
-        }else if($jugador->posicion != "Arquero" || $jugador->posicion != "Defensor" || $jugador->posicion != "Medio campista" || $jugador->posicion != "Delantero"){
+        }else if(($jugador->posicion!="Arquero") || ($jugador->posicion!="Defensor") || ($jugador->posicion!="Medio campista") || ($jugador->posicion!="Delantero")){
             return $this->view->response("Por favor complete la posicion con una opcion valida", 400);
         }else{
             if(in_array($jugador->id_pais, array_column($id_paises, 'id')))

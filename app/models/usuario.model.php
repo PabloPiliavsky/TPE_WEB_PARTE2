@@ -8,7 +8,7 @@ Class usuariosModel{
     }
 
     public function obtenerUsuario($usuario){
-        $sentencia = $this -> db ->prepare("SELECT * FROM usuarios WHERE (usuario) = :usuario");
+        $sentencia = $this -> db ->prepare("SELECT * FROM usuario WHERE (usuario) = :usuario");
         $sentencia -> execute([":usuario" => $usuario]);
         return $sentencia -> fetch(PDO::FETCH_OBJ);
     }
