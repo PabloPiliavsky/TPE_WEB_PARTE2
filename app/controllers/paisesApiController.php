@@ -137,6 +137,8 @@ Class paisesApiController{
             return $this->view->response("Por favor complete todos los datos", 400);
         else if($pais->continente != "America" && $pais->continente != "Africa" && $pais->continente != "Europa" && $pais->continente != "Asia" && $pais->continente != "Oceania")
             return $this->view->response("El continente indicado no existe", 400);
+        else if (!is_numeric($pais->clasificacion) || $pais->clasificacion < 1)
+            return $this->view->response("La clasificación debe ser un número mayor a 0", 400);
         else
             return $pais;
     }

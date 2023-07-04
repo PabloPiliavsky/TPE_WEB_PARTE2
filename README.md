@@ -1,5 +1,5 @@
 # SERVICIOS REST
-Por medio de la API Rest brinda integración con otros sistemas por lo cuál podrás acceder y/o modificar la información mediante los métodos HTTP, lo que te permitirá acceder a ellos mediante URLs (endpoints). La información devuelta puede ser en formato JSON, XML, entre otros. En este caso te recomendamos utilizar el formato JSON para las altas y modificaciones.
+La API Rest brinda integración con otros sistemas por lo cuál podrás acceder y/o modificar la información mediante los métodos HTTP, lo que te permitirá acceder a ellos mediante URLs (endpoints). La información devuelta puede ser en formato JSON, XML, entre otros. En este caso te recomendamos utilizar el formato JSON para las altas y modificaciones.
 
 
 ### FORMATOS DE LAS URLS
@@ -14,7 +14,7 @@ Por medio de la API Rest brinda integración con otros sistemas por lo cuál pod
 
 # USUARIO
 
-Para poder **agreagar/eliminar/actualizar** un jugador ó un país se debe proporcionar un **TOKEN** el cuál se puede obtener luego de verificar usuario y contraseña.
+Para poder **agregar/eliminar/actualizar** un jugador ó un país se debe proporcionar un **TOKEN** el cuál se puede obtener luego de verificar usuario y contraseña.
 
 Para realizar con éxito las tareas de alta/baja/modificación debe realizar los siguientes pasos: 
 
@@ -81,18 +81,13 @@ Si el token es correcto y los datos son ingresados de manera adecuada se podrán
 
 > ### **¡IMPORTANTE!**
 >
-> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el _endpoint:
+> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el _endpoint_:
 >
 >  #### **EN EL ENDPOINT:**
 > + El valor de __:ID__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
 >
 > #### **EN EL CUERPO DE LA _REQUEST_**
 > + Los valores ingresados en __id_pais__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
-> + Los valores referenciados hasta el momento son:
->   - 1: Argentina
->   - 2: Francia 
->   - 3: Croacia 
->   - 4: Marruecos
 > + Los valores permitidos en  __posicion__ pueden variar unicamente entre:
 >   - Arquero
 >   - Defensor
@@ -150,28 +145,20 @@ Devuelve todos los jugadores que pertenecen a la seleccion de id_pais 2, en este
 > + Cuerpo de la respuesta
 >   - Listará los jugadores en formato JSON, ordenados por id ascendentemente que cumplan con el filtro/valor indicados.
 
-### Si el criterio no se corresponde con un atributo válido la respuesta será
+### Si el criterio o el valor no son correctos la respuesta será
 
 > + Código de respuesta
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
->   - "Verificar el criterio ingresado"
+>   - "Verificar el filtro elegido como criterio y el valor ingresado"
 
-
-### Si el orden no cumple con el formato indicado la respuesta será
-
-> + Código de respuesta
->   - 400 (Bad request)
-> + Cuerpo de la respuesta
->   - "Verificar el orden elegido"
-
-
-### Si el criterio es correcto pero el valor no existe la respuesta será
+### Si no existen jugadores con el valor ingresado la respuesta será
 
 > + Código de respuesta
 >   - 404 (Not found)
 > + Cuerpo de la respuesta
->   - "No hay ningún paises con ese valor"
+>   - "No hay ningun jugador con ese valor"
+
 
 ## 1.2 ORDENADO:
 Para ordenar la obtención de todos los jugadores debe agregar los query params **criterio** (que debe indicar el atributo con el cuál desea ordenar) y **orden** (que indicará el valor para ordenarlo ascendentemente o descendentemente):
@@ -226,6 +213,20 @@ Devuelve la lista de jugadores ordenados por id_pais de forma descendente, o sea
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
 >   - "Verificar el criterio y/o valor ingresados"
+### Si el orden no cumple con el formato indicado la respuesta será
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el orden elegido"
+
+
+### Si el criterio es correcto pero el valor no existe la respuesta será
+
+> + Código de respuesta
+>   - 404 (Not found)
+> + Cuerpo de la respuesta
+>   - "No hay ningún paises con ese valor"
 
 
 ## 1.3 PAGINACIÓN:
@@ -464,13 +465,14 @@ Elimina de la tabla el jugador con id igual a 17.
 
 >### **¡IMPORTANTE!**
 >
-> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el endpoint:
+> A tener en cuenta al momento de ingresar datos en el cuerpo de la _request_ o en el _endpoint_:
 >
 > #### EN EL ENDPOINT:
 > + El valor de __:ID__ debe ser un entero > 0, por lo que no se aceptarán letras, ni caractéres especiales.
 >
 > #### EN EL CUERPO DE LA _REQUEST_
 > + Los valores ingresados en __nombre__ y __clasificacion__ son únicos es decir, no pueden repetirse.
+> + El valor ingresados en  __clasificacion__ debe ser un entero > 0.
 
 
 
@@ -580,6 +582,21 @@ Devuelve la lista de paises ordenados por id de forma descendente, o sea, empeza
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta
 >   - "Verificar el criterio elegido y/o el valor ingresado"
+
+### Si el orden no cumple con el formato indicado la respuesta será
+
+> + Código de respuesta
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta
+>   - "Verificar el orden elegido"
+
+
+### Si el criterio es correcto pero el valor no existe la respuesta será
+
+> + Código de respuesta
+>   - 404 (Not found)
+> + Cuerpo de la respuesta
+>   - "No hay ningún paises con ese valor"
 
 ## 2. OBTENER LOS DATOS DE UN PAÍS ESPECÍFICO
 Para obtener los datos de un país en el endpoint, el verbo, el recurso y el parámetro del recurso deben ser:
@@ -720,6 +737,13 @@ Por ejemplo:
 >   - 400 (Bad request)
 > + Cuerpo de la respuesta: 
 >   - "El pais o la clasificación ya existen".
+
+### Si la clasificación ingresada no cumple con el formato indicado mostrará lo siguiente:
+
+> + Código de respuesta: 
+>   - 400 (Bad request)
+> + Cuerpo de la respuesta: 
+>   - "La clasificación debe ser un número mayor a 0".
 
 ### Si ocurre algun error al agregar el jugador en la base de datos la respuesta será:
 > + Código de respuesta: 
