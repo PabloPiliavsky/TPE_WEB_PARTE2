@@ -28,7 +28,7 @@ Class paisesApiController{
             else
                 return $this->view->response("El pais con el id ".$id." no existe", 404);
         }else
-            return $this->view->response("Por favor verifique los datos ingresados", 404);
+            return $this->view->response("Por favor verifique los datos ingresados", 400);
     }
 
     /*--Verifica si está seteado el orden, el filtro, la página o ninguno--*/
@@ -55,7 +55,7 @@ Class paisesApiController{
             return $this->model->obtenerPaisesOrdenados($sql);
         }
         else
-            return $this->view->response("Verificar el atributo de la tabla elegido como criterio", 404);
+            return $this->view->response("Verificar el criterio elegido y/o el valor ingresado", 400);
     }
 
     /*--Si el filtro es correcto retorna los Paises obtenidos que cumplen con dicho filtro--*/
@@ -64,7 +64,7 @@ Class paisesApiController{
             $sql = "SELECT * FROM paises WHERE $filtro = :valor";
             return $this->model->obtenerPaisesFiltrados($sql, $_REQUEST['valor']);    
         }else
-            return $this->view->response("Verificar el filtro elegido como criterio y el valor ingresado", 400);
+            return $this->view->response("Verificar el filtro elegido como criterio y/o el valor ingresado", 400);
     }    
 
     /*--Si los datos ingresados no están vacíos agrega al jugador--*/
@@ -79,7 +79,7 @@ Class paisesApiController{
             if($paisAgregado)
                 return $this->view->response($paisAgregado, 201);
             else
-                return $this->view->response("El pais no se pudo agrear con éxito", 400); 
+                return $this->view->response("El pais no se pudo agregar con éxito", 500); 
         }
     }
 
@@ -108,7 +108,7 @@ Class paisesApiController{
                 $verifica = $this->verificarPaisExistente($pais->clasificacion,$pais->nombre, $id);
                 if($verifica)
                     $this->model->actualizarPais($pais, $id);   
-                    return $this->view->response("El pais con el id ".$id." se actualizó con éxito", 200); 
+                    return $this->view->response($pais, 200); 
             }                             
         }else    
             return $this->view->response("Por favor verifique que el id se ingresó correctamente", 400);
