@@ -47,22 +47,31 @@ Class paisesApiController{
     /*--Verifica que los atributos sean correctos, obtiene la sentencia y la ejecuta en el modelo--*/
     public function obtenerPaisesOrdenados($criterio){ 
         if($this->verificarAtributos($criterio)){
-            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden'])){
+            if(isset($_REQUEST['orden'])){
                 $orden = $_REQUEST['orden'];
+                if($orden == null || $orden =="asc" || $orden =="ASC" || $orden == "desc" || $orden == "DESC"){
                 $sql = "SELECT * FROM paises ORDER BY $criterio $orden";
-            }else
+                return $this->model->obtenerPaisesOrdenados($sql);
+                }else
+                    return $this->view->response("Verificar el orden elegido", 400);
+            }else{
                 $sql = "SELECT * FROM paises ORDER BY $criterio";
-            return $this->model->obtenerPaisesOrdenados($sql);
-        }
-        else
+                return $this->model->obtenerPaisesOrdenados($sql);
+            }
+        }else
             return $this->view->response("Verificar el criterio elegido y/o el valor ingresado", 400);
     }
+
 
     /*--Si el filtro es correcto retorna los Paises obtenidos que cumplen con dicho filtro--*/
     public function obtenerPaisesFiltrados($filtro){  
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM paises WHERE $filtro = :valor";
-            return $this->model->obtenerPaisesFiltrados($sql, $_REQUEST['valor']);    
+            $paisesFiltrados=$this->model->obtenerPaisesFiltrados($sql, $_REQUEST['valor']);
+            if($paisesFiltrados==null)
+                return $this->view->response("No hay ningun pais con ese valor", 404);
+            else
+                return $paisesFiltrados;     
         }else
             return $this->view->response("Verificar el filtro elegido como criterio y/o el valor ingresado", 400);
     }    
@@ -119,6 +128,8 @@ Class paisesApiController{
         $pais = $this->obtenerDatos();
         if (empty($pais->nombre) || empty($pais->continente) || empty($pais->clasificacion) || empty($pais->bandera))
             return $this->view->response("Por favor complete todos los datos", 400);
+        else if($pais->continente != "America" || $pais->continente != "Africa" ||$pais->continente != "Europa" ||$pais->continente != "Asia" ||$pais->continente != "Oceania")
+            return $this->view->response("El continente indicado no existe", 400);
         else
             return $pais;
     }

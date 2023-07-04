@@ -53,7 +53,7 @@ Class jugadoresApiController{
         if($this->verificarAtributos($criterio)){
             if(isset($_REQUEST['orden'])) {
                 $orden = $_REQUEST['orden'];
-                if($_REQUEST['orden'] == null || $_REQUEST['orden'] =="asc" || $_REQUEST['orden'] =="ASC" || $_REQUEST['orden'] == "desc" || $_REQUEST['orden'] == "DESC"){
+                if($orden == null || $orden =="asc" || $orden =="ASC" || $orden == "desc" || $orden == "DESC"){
                     $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
                     return $this->model->obtenerJugadoresOrdenados($sql);
                 }else
@@ -61,7 +61,7 @@ Class jugadoresApiController{
             }
             else{
                 $sql = "SELECT * FROM jugadores ORDER BY $criterio";
-                        return $this->model->obtenerJugadoresOrdenados($sql);
+                return $this->model->obtenerJugadoresOrdenados($sql);
             }
         }
         else
@@ -74,7 +74,7 @@ Class jugadoresApiController{
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
             $jugadoresFiltrados= $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);
             if($jugadoresFiltrados==null)
-                return $this->view->response("no hay ningun jugador con ese valor", 400);
+                return $this->view->response("No hay ningun jugador con ese valor", 404);
             else
             return $jugadoresFiltrados;
             }
