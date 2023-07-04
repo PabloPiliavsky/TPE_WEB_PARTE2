@@ -4,12 +4,17 @@ Class jugadoresModel{
     private $db;
 
     public function __construct(){
-        $this->db = new PDO('mysql:host=localhost:4306;dbname=db_mundial;charset=utf8', 'root', '');
+        $this->db = new PDO('mysql:host=localhost;dbname=db_mundial;charset=utf8', 'root', '');
     }
     public function obtenerJugadores(){
         $sentencia = $this->db->prepare('SELECT jugadores.*, paises.nombre as pais FROM jugadores 
                                       JOIN paises ON jugadores.id_pais = paises.id');
         $sentencia->execute();
+        return $sentencia->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function obtenerJugadoresPorPais($id_pais){
+        $sentencia = $this->db->prepare('SELECT * FROM jugadores WHERE (id_pais) = :id_pais');
+        $sentencia->execute([':id_pais' => $id_pais]);
         return $sentencia->fetchAll(PDO::FETCH_OBJ);
     }
     

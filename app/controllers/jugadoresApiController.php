@@ -76,9 +76,8 @@ Class jugadoresApiController{
             if($jugadoresFiltrados==null)
                 return $this->view->response("No hay ningun jugador con ese valor", 404);
             else
-            return $jugadoresFiltrados;
-            }
-        else
+                return $jugadoresFiltrados;
+        }else
             return $this->view->response("Verificar el filtro elegido como criterio y el valor ingresado", 400);
     }      
     
@@ -148,8 +147,9 @@ Class jugadoresApiController{
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
             return $this->view->response("Por favor complete todos los datos", 400);
-        }else if(($jugador->posicion!="Arquero") || ($jugador->posicion!="Defensor") || ($jugador->posicion!="Medio campista") || ($jugador->posicion!="Delantero")){
-            return $this->view->response("Por favor complete la posicion con una opcion valida", 400);
+        }else if(($jugador->posicion != "Arquero") && ($jugador->posicion != "Defensor") && 
+                 ($jugador->posicion != "Medio campista") && ($jugador->posicion != "Delantero")){
+            return $this->view->response("Por favor complete la posición con una opción válida", 400);
         }else{
             if(in_array($jugador->id_pais, array_column($id_paises, 'id')))
                 return $jugador; 

@@ -1,15 +1,18 @@
 <?php
 require_once './app/models/paises.model.php';
+require_once './app/models/jugadores.model.php';
 require_once './app/views/mundial.api.view.php';
 require_once './helper/authHelper.php';
 
 Class paisesApiController{
     private $model;
+    private $modelJugadores;
     private $view;
     private $data;
 
     public function __construct(){
         $this->model = new paisesModel(); 
+        $this->modelJugadores = new jugadoresModel(); 
         $this->view = new mundialApiView(); 
         $this->data = file_get_contents("php://input"); // lee el body del request
     }
@@ -97,11 +100,15 @@ Class paisesApiController{
         $this -> comprobarUsuarioValido();
         if(isset($params[':ID']) && is_numeric($params[':ID']) && $params[':ID'] > 0){
             $id = $params[':ID'];
-            if($this->model->obtenerPais($id)){
-                $this->model->eliminarPais($id);  
-                return $this->view->response("El pais con el id ".$id." se eliminó con éxito", 200);
-            }else
-                return $this->view->response("El pais no se pudo eliminar, porque no existe el id ".$id, 404);
+            if($this->modelJugadores->obtenerJugadoresPorPais($id) != null){
+                return $this->view->response("El pais no se pudo eliminar, porque contiene registros vinculados", 404);
+            }else{
+                if($this->model->obtenerPais($id)){
+                    $this->model->eliminarPais($id);  
+                    return $this->view->response("El pais con el id ".$id." se eliminó con éxito", 200);
+                }else
+                    return $this->view->response("El pais no se pudo eliminar, porque no existe el id ".$id, 404);
+            }
         }
         else
             return $this->view->response("Por favor verifique el id ingresado", 400);
@@ -128,7 +135,7 @@ Class paisesApiController{
         $pais = $this->obtenerDatos();
         if (empty($pais->nombre) || empty($pais->continente) || empty($pais->clasificacion) || empty($pais->bandera))
             return $this->view->response("Por favor complete todos los datos", 400);
-        else if($pais->continente != "America" || $pais->continente != "Africa" ||$pais->continente != "Europa" ||$pais->continente != "Asia" ||$pais->continente != "Oceania")
+        else if($pais->continente != "America" && $pais->continente != "Africa" && $pais->continente != "Europa" && $pais->continente != "Asia" && $pais->continente != "Oceania")
             return $this->view->response("El continente indicado no existe", 400);
         else
             return $pais;
