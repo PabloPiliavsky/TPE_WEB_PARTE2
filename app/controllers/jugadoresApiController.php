@@ -147,10 +147,17 @@ Class jugadoresApiController{
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
             return $this->view->response("Por favor complete todos los datos", 400);
+<<<<<<< HEAD
         }else if(($jugador->posicion != "Arquero") && ($jugador->posicion != "Defensor") && 
                  ($jugador->posicion != "Medio campista") && ($jugador->posicion != "Delantero")){
             return $this->view->response("Por favor complete la posición con una opción válida", 400);
         }else{
+=======
+        }else if(($jugador->posicion!="Arquero") && ($jugador->posicion!="Defensor") && ($jugador->posicion!="Medio campista") && ($jugador->posicion!="Delantero")){
+            return $this->view->response("Por favor complete la posicion con una opcion valida", 400);
+        }
+        else{
+>>>>>>> 7912a30299542fbb9ac61d7dff64b3145a155d61
             if(in_array($jugador->id_pais, array_column($id_paises, 'id')))
                 return $jugador; 
             else 
