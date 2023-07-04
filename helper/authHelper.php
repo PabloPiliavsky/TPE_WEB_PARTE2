@@ -13,7 +13,8 @@ Class usuariosHelper {
         $this -> usuario = null;
     }
 
-    public function validarPermisos(){
+    public function validarPermisos()
+    {
         $header = apache_request_headers();
         if (!isset($header['Authorization']))
             return null;
@@ -50,12 +51,12 @@ Class usuariosHelper {
         return ['token' => $token];
     }
 
-    private function comprobarToken($token){
+    private function comprobarToken($token)
+    {
         // Divide el token en sus componentes: encabezado, payload y firma
         [$header, $payload, $signature] = explode('.', $token);
 
         // Decodifica el encabezado y el payload
-        $headerData = json_decode(base64_decode($header), true);
         $payloadData = json_decode(base64_decode($payload), true);
 
         // Verifica la firma del token
@@ -63,16 +64,21 @@ Class usuariosHelper {
         $signatureData = base64_decode($signature);
         $isSignatureValid = hash_equals($hash, $signatureData);
 
-        if ($isSignatureValid){
+        if ($isSignatureValid) {
             // Verifica la fecha de vencimiento
             $currentTimestamp = time();
             $expirationTimestamp = $payloadData['exp'];
             if ($currentTimestamp <= $expirationTimestamp) {
                 // El token no ha expirado
                 return $payloadData['sub']; // identificador del usuario del payload
-            }else 
+            } else {
                 return null;
-        }else 
+            }
+        } else {
             return null;
+        }
     }
+
+
+
 }

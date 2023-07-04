@@ -51,12 +51,18 @@ Class jugadoresApiController{
     /*--Verifica que los atributos sean correctos, obtiene la sentencia y la ejecuta en el modelo--*/
     public function obtenerJugadoresOrdenados($criterio){
         if($this->verificarAtributos($criterio)){
-            if(isset($_REQUEST['orden']) &&  !empty($_REQUEST['orden'])){
+            if(isset($_REQUEST['orden'])) {
                 $orden = $_REQUEST['orden'];
-                $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
-            }else
+                if($orden == null || $orden =="asc" || $orden =="ASC" || $orden == "desc" || $orden == "DESC"){
+                    $sql = "SELECT * FROM jugadores ORDER BY $criterio $orden";
+                    return $this->model->obtenerJugadoresOrdenados($sql);
+                }else
+                    return $this->view->response("Verificar el orden elegido", 400);
+            }
+            else{
                 $sql = "SELECT * FROM jugadores ORDER BY $criterio";
-            return $this->model->obtenerJugadoresOrdenados($sql);
+                return $this->model->obtenerJugadoresOrdenados($sql);
+            }
         }
         else
             return $this->view->response("Verificar el criterio y/o valor ingresados", 400);
@@ -66,14 +72,19 @@ Class jugadoresApiController{
     public function obtenerJugadoresFiltrados($filtro){ //listo
         if ($this->verificarAtributos($filtro) && isset($_REQUEST['valor'])){
             $sql = "SELECT * FROM jugadores WHERE $filtro = :valor";
-            return $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);    
-        }else
+            $jugadoresFiltrados= $this->model->obtenerJugadoresFiltrados($sql, $_REQUEST['valor']);
+            if($jugadoresFiltrados==null)
+                return $this->view->response("No hay ningun jugador con ese valor", 404);
+            else
+            return $jugadoresFiltrados;
+            }
+        else
             return $this->view->response("Verificar el filtro elegido como criterio y el valor ingresado", 400);
     }      
     
     /*--Verifica que los datos sean correctos para poder paginar adecuadamente--*/
     public function paginar($pagina,$filas){ 
-        if(!empty($pagina) && !empty($filas) && $pagina>0 && $filas>0 && is_numeric($pagina) && is_numeric($filas)){
+        if(!empty($pagina) && !empty($filas) && $pagina>0 && $filas>1 && is_numeric($pagina) && is_numeric($filas)){
             $cantidad = $this->model->obtenerTotalDeRegistros();
             if($pagina <= $cantidad/$filas){
                 $inicio=$filas*($pagina-1);
@@ -96,7 +107,7 @@ Class jugadoresApiController{
             if($jugador)
                 return $this->view->response($jugador, 201);
             else
-                return $this->view->response("El jugador no se pudo agrear con éxito", 500); 
+                return $this->view->response("El jugador no se pudo agregar con éxito", 500); 
         }
     }
 
@@ -136,13 +147,15 @@ Class jugadoresApiController{
         $jugador = $this->obtenerDatos();
         if (empty($jugador->nombre) || empty($jugador->apellido) || empty($jugador->descripcion) || 
             empty($jugador->posicion)|| empty($jugador->foto) || empty($jugador->id_pais)){
-                return $this->view->response("Por favor complete todos los datos", 400);
+            return $this->view->response("Por favor complete todos los datos", 400);
+        }else if(($jugador->posicion!="Arquero") || ($jugador->posicion!="Defensor") || ($jugador->posicion!="Medio campista") || ($jugador->posicion!="Delantero")){
+            return $this->view->response("Por favor complete la posicion con una opcion valida", 400);
         }else{
             if(in_array($jugador->id_pais, array_column($id_paises, 'id')))
                 return $jugador; 
             else 
                 return $this->view->response("El id del pais no es correcto", 400);
-        }  
+        }
     }
 
     /*--Verifica que los campos ingresados para filtrar u ordenar coincidan con los de la bbdd--*/
